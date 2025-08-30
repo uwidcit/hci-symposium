@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Project - COMP 3603 Research Symposium{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-edit me-3 text-warning"></i>
+                    Edit Research Project
+                </h1>
+                <p class="lead text-muted">
+                    Update project information and upload media files
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Dashboard
+                    </a>
+                    <a href="{{ url_for('view_project', project_id=project.id) }}" class="btn btn-outline-info btn-lg">
+                        <i class="fas fa-eye me-2"></i>
+                        View Project
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Edit Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card border-0 shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-edit me-2"></i>
+                            Project Information
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="row">
+                                                                 <!-- Basic Information -->
+                                 <div class="col-lg-8">
+                                     <div class="mb-3">
+                                         <label for="group_name" class="form-label">
+                                             <i class="fas fa-users me-2"></i>Group Name
+                                         </label>
+                                         <input type="text" class="form-control form-control-lg" 
+                                                id="group_name" name="group_name" value="{{ project.group_name }}" required>
+                                     </div>
+                                     
+                                     <div class="mb-3">
+                                         <label for="title" class="form-label">
+                                             <i class="fas fa-heading me-2"></i>Project Title
+                                         </label>
+                                         <input type="text" class="form-control form-control-lg" 
+                                                id="title" name="title" value="{{ project.title }}" required>
+                                     </div>
+                                     
+                                     <div class="mb-3">
+                                         <label for="abstract" class="form-label">
+                                             <i class="fas fa-file-alt me-2"></i>Abstract
+                                         </label>
+                                         <textarea class="form-control" id="abstract" name="abstract" 
+                                                   rows="4" required>{{ project.abstract }}</textarea>
+                                     </div>
+                                     
+                                     <div class="row">
+                                         <div class="col-md-6">
+                                             <div class="mb-3">
+                                                 <label for="member1_name" class="form-label">
+                                                     <i class="fas fa-user me-2"></i>Member 1 Name
+                                                 </label>
+                                                 <input type="text" class="form-control" 
+                                                        id="member1_name" name="member1_name" 
+                                                        value="{{ project.member1_name }}" required>
+                                             </div>
+                                         </div>
+                                         <div class="col-md-6">
+                                             <div class="mb-3">
+                                                 <label for="member2_name" class="form-label">
+                                                     <i class="fas fa-user me-2"></i>Member 2 Name
+                                                 </label>
+                                                 <input type="text" class="form-control" 
+                                                        id="member2_name" name="member2_name" 
+                                                        value="{{ project.member2_name }}" required>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     
+                                     <div class="row">
+                                         <div class="col-md-6">
+                                             <div class="mb-3">
+                                                 <label for="paper1_title" class="form-label">
+                                                     <i class="fas fa-file-text me-2"></i>Paper 1 Title
+                                                 </label>
+                                                 <input type="text" class="form-control" 
+                                                        id="paper1_title" name="paper1_title" 
+                                                        value="{{ project.paper1_title }}" required>
+                                             </div>
+                                         </div>
+                                         <div class="col-md-6">
+                                             <div class="mb-3">
+                                                 <label for="paper2_title" class="form-label">
+                                                     <i class="fas fa-file-text me-2"></i>Paper 2 Title
+                                                 </label>
+                                                 <input type="text" class="form-control" 
+                                                        id="paper2_title" name="paper2_title" 
+                                                        value="{{ project.paper2_title }}" required>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     
+                                     <div class="mb-3">
+                                         <label for="presentation_video_url" class="form-label">
+                                             <i class="fas fa-video me-2"></i>Presentation Video URL
+                                         </label>
+                                         <input type="url" class="form-control" 
+                                                id="presentation_video_url" name="presentation_video_url" 
+                                                value="{{ project.presentation_video_url or '' }}" 
+                                                placeholder="https://www.youtube.com/watch?v=...">
+                                         <div class="form-text">
+                                             URL to the presentation video (YouTube, etc.)
+                                         </div>
+                                     </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="literature_review" class="form-label">
+                                            <i class="fas fa-book-open me-2"></i>Literature Review
+                                        </label>
+                                        <textarea class="form-control" id="literature_review" name="literature_review" 
+                                                  rows="6" placeholder="Literature review content...">{{ project.literature_review or '' }}</textarea>
+                                        <div class="form-text">
+                                            Detailed literature review and analysis
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Media Uploads -->
+                                <div class="col-lg-4">
+                                    <div class="card border-0 bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title mb-3">
+                                                <i class="fas fa-upload me-2"></i>
+                                                Media Files
+                                            </h6>
+                                            
+                                            <!-- Poster Upload -->
+                                            <div class="mb-3">
+                                                <label for="poster" class="form-label">
+                                                    <i class="fas fa-file-pdf me-2 text-success"></i>Research Poster
+                                                </label>
+                                                <input type="file" class="form-control" id="poster" name="poster" accept=".pdf">
+                                                <div class="form-text">PDF format only</div>
+                                                {% if project.poster_filename %}
+                                                <div class="mt-2">
+                                                    <small class="text-success">
+                                                        <i class="fas fa-check-circle me-1"></i>
+                                                        Current: {{ project.poster_filename }}
+                                                    </small>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                                                                         <!-- Presentation Upload -->
+                                             <div class="mb-3">
+                                                 <label for="presentation" class="form-label">
+                                                     <i class="fas fa-file-pdf me-2 text-warning"></i>Literature Review Presentation
+                                                 </label>
+                                                 <input type="file" class="form-control" id="presentation" name="presentation" 
+                                                        accept=".pdf">
+                                                 <div class="form-text">PDF format only</div>
+                                                 {% if project.presentation_filename %}
+                                                 <div class="mt-2">
+                                                     <small class="text-warning">
+                                                         <i class="fas fa-check-circle me-1"></i>
+                                                         Current: {{ project.presentation_filename }}
+                                                     </small>
+                                                 </div>
+                                                 {% endif %}
+                                             </div>
+                                            
+                                            <!-- Current Status -->
+                                            <div class="mt-3 p-3 bg-white rounded">
+                                                <h6 class="mb-2">Current Status</h6>
+                                                <div class="d-flex flex-column gap-1">
+                                                    {% if project.poster_filename %}
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-file-pdf me-1"></i>Poster Available
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="badge bg-secondary">
+                                                        <i class="fas fa-file-pdf me-1"></i>No Poster
+                                                    </span>
+                                                    {% endif %}
+                                                    
+                                                                                                         {% if project.presentation_filename %}
+                                                     <span class="badge bg-warning">
+                                                         <i class="fas fa-file-pdf me-1"></i>Presentation Available
+                                                     </span>
+                                                     {% else %}
+                                                     <span class="badge bg-secondary">
+                                                         <i class="fas fa-file-pdf me-1"></i>No Presentation
+                                                     </span>
+                                                     {% endif %}
+                                                     
+                                                     {% if project.presentation_video_url %}
+                                                     <span class="badge bg-info">
+                                                         <i class="fas fa-video me-1"></i>Video URL Available
+                                                     </span>
+                                                     {% else %}
+                                                     <span class="badge bg-secondary">
+                                                         <i class="fas fa-video me-1"></i>No Video URL
+                                                     </span>
+                                                     {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fas fa-times me-2"></i>
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-warning btn-lg">
+                                    <i class="fas fa-save me-2"></i>
+                                    Update Project
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Preview -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h3 class="mb-4">
+                    <i class="fas fa-eye me-2 text-primary"></i>
+                    Preview Changes
+                </h3>
+                <p class="text-muted mb-4">
+                    Review your changes before saving, or view the current project
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('view_project', project_id=project.id) }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-eye me-2"></i>
+                        View Current Project
+                    </a>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

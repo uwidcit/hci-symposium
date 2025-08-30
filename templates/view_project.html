@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - COMP 3603 Research Symposium{% endblock %}
+
+{% block content %}
+<!-- Project Header -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('index') }}" class="text-decoration-none">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('gallery') }}" class="text-decoration-none">
+                                <i class="fas fa-images me-1"></i>Research Gallery
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Project Details</li>
+                    </ol>
+                </nav>
+                
+                <div class="text-center mb-4">
+                    <h1 class="display-5 fw-bold mb-3">
+                        <i class="fas fa-microscope me-3 text-primary"></i>
+                        {{ project.title }}
+                    </h1>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap mb-3">
+                        <span class="badge bg-primary fs-6 px-3 py-2">
+                            <i class="fas fa-users me-1"></i>
+                            Student Research
+                        </span>
+                        <span class="badge bg-success fs-6 px-3 py-2">
+                            <i class="fas fa-calendar me-1"></i>
+                            {{ project.created_at.strftime('%B %Y') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                                 <!-- Research Team -->
+                 <div class="card mb-4">
+                     <div class="card-header">
+                         <h5 class="mb-0">
+                             <i class="fas fa-users me-2"></i>
+                             Research Team
+                         </h5>
+                     </div>
+                     <div class="card-body">
+                         <div class="text-center mb-3">
+                             <h4 class="text-primary">{{ project.group_name }}</h4>
+                         </div>
+                         <div class="row">
+                             <div class="col-md-6">
+                                 <div class="text-center p-3">
+                                     <i class="fas fa-user-graduate fa-3x text-primary mb-2"></i>
+                                     <h6 class="mb-1">Team Member</h6>
+                                     <p class="mb-0 fw-bold">{{ project.member1_name }}</p>
+                                 </div>
+                             </div>
+                             <div class="col-md-6">
+                                 <div class="text-center p-3">
+                                     <i class="fas fa-user-graduate fa-3x text-primary mb-2"></i>
+                                     <h6 class="mb-1">Team Member</h6>
+                                     <p class="mb-0 fw-bold">{{ project.member2_name }}</p>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Paper Information -->
+                 <div class="card mb-4">
+                     <div class="card-header">
+                         <h5 class="mb-0">
+                             <i class="fas fa-file-text me-2"></i>
+                             Research Papers
+                         </h5>
+                     </div>
+                     <div class="card-body">
+                         <div class="row">
+                             <div class="col-md-6">
+                                 <h6 class="text-primary">Paper 1</h6>
+                                 <p class="mb-2">{{ project.paper1_title }}</p>
+                             </div>
+                             <div class="col-md-6">
+                                 <h6 class="text-primary">Paper 2</h6>
+                                 <p class="mb-2">{{ project.paper2_title }}</p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+
+                <!-- Abstract -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-alt me-2"></i>
+                            Research Abstract
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ project.abstract }}</p>
+                    </div>
+                </div>
+
+                <!-- Literature Review -->
+                {% if project.literature_review %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-book-open me-2"></i>
+                            Literature Review
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="literature-review">
+                            {{ project.literature_review|replace('\n', '<br>')|safe }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Paper Metadata -->
+                {% if project.paper_metadata %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-text me-2"></i>
+                            Paper Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="paper-metadata">
+                            {{ project.paper_metadata|replace('\n', '<br>')|safe }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Media Resources -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-archive me-2"></i>
+                            Research Resources
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                                                 {% if project.poster_filename %}
+                         <div class="mb-3">
+                             <h6 class="text-success">
+                                 <i class="fas fa-file-pdf me-2"></i>
+                                 Research Poster
+                             </h6>
+                             <a href="{{ url_for('uploaded_file', filename='posters/' + project.poster_filename) }}" 
+                                class="btn btn-success w-100" target="_blank">
+                                 <i class="fas fa-download me-2"></i>
+                                 Download Poster (PDF)
+                             </a>
+                         </div>
+                         {% endif %}
+
+                         {% if project.presentation_filename %}
+                         <div class="mb-3">
+                             <h6 class="text-warning">
+                                 <i class="fas fa-file-pdf me-2"></i>
+                                 Literature Review Presentation
+                             </h6>
+                             <a href="{{ url_for('uploaded_file', filename='presentations/' + project.presentation_filename) }}" 
+                                class="btn btn-warning w-100" target="_blank">
+                                 <i class="fas fa-download me-2"></i>
+                                 Download Presentation (PDF)
+                             </a>
+                         </div>
+                         {% endif %}
+
+                         {% if project.presentation_video_url %}
+                         <div class="mb-3">
+                             <h6 class="text-info">
+                                 <i class="fas fa-video me-2"></i>
+                                 Video Presentation
+                             </h6>
+                             <a href="{{ project.presentation_video_url }}" 
+                                class="btn btn-info w-100" target="_blank">
+                                 <i class="fas fa-play me-2"></i>
+                                 Watch Video
+                             </a>
+                         </div>
+                         {% endif %}
+
+                         {% if not project.poster_filename and not project.presentation_filename and not project.presentation_video_url %}
+                        <div class="text-center text-muted">
+                            <i class="fas fa-info-circle fa-2x mb-2"></i>
+                            <p class="mb-0">No media resources available for this project yet.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Project Stats -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Project Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="stat-item">
+                                    <div class="stat-number">{{ project.created_at.strftime('%d') }}</div>
+                                    <div class="stat-label">Day</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-item">
+                                    <div class="stat-number">{{ project.created_at.strftime('%m') }}</div>
+                                    <div class="stat-label">Month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <small class="text-muted">
+                                Created: {{ project.created_at.strftime('%B %d, %Y') }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3">
+                            <i class="fas fa-compass me-2"></i>
+                            Navigation
+                        </h6>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('gallery') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Back to Gallery
+                            </a>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-home me-2"></i>
+                                Return Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Projects Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h3 class="mb-3">
+                <i class="fas fa-lightbulb me-2 text-primary"></i>
+                Explore More Research
+            </h3>
+            <p class="text-muted">
+                Discover other innovative projects in our research symposium
+            </p>
+        </div>
+        
+        <div class="text-center">
+            <a href="{{ url_for('gallery') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-images me-2"></i>
+                View All Research Projects
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

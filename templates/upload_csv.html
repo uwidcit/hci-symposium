@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Upload CSV - COMP 3603 Research Symposium{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-upload me-3 text-success"></i>
+                    Upload Research Projects
+                </h1>
+                <p class="lead text-muted">
+                    Bulk upload research project data via CSV file
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Dashboard
+                    </a>
+                    <a href="#csv-format" class="btn btn-outline-info btn-lg">
+                        <i class="fas fa-info-circle me-2"></i>
+                        CSV Format Guide
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Upload Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-csv me-2"></i>
+                            Upload CSV File
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label for="csv_file" class="form-label">
+                                    <i class="fas fa-file me-2"></i>Select CSV File
+                                </label>
+                                <input type="file" class="form-control form-control-lg" 
+                                       id="csv_file" name="csv_file" accept=".csv" required>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    File must be in CSV format with headers matching the required columns
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-upload me-2"></i>
+                                    Upload and Process CSV
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CSV Format Guide -->
+<section id="csv-format" class="py-5 bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <h2 class="text-center mb-5">
+                    <i class="fas fa-table me-2 text-info"></i>
+                    CSV Format Requirements
+                </h2>
+                
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-check-circle me-2 text-success"></i>
+                                    Required Columns
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                                                 <ul class="list-unstyled">
+                                     <li class="mb-2">
+                                         <strong>group_name:</strong> Research group name
+                                     </li>
+                                     <li class="mb-2">
+                                         <strong>title:</strong> Research project title
+                                     </li>
+                                     <li class="mb-2">
+                                         <strong>abstract:</strong> Project abstract/summary
+                                     </li>
+                                     <li class="mb-2">
+                                         <strong>member1_name:</strong> First team member
+                                     </li>
+                                     <li class="mb-2">
+                                         <strong>member2_name:</strong> Second team member
+                                     </li>
+                                     <li class="mb-2">
+                                         <strong>paper1_title:</strong> First paper title
+                                     </li>
+                                     <li class="mb-2">
+                                         <strong>paper2_title:</strong> Second paper title
+                                     </li>
+                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-plus-circle me-2 text-info"></i>
+                                    Optional Columns
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                                                 <ul class="list-unstyled">
+                                     <li class="mb-2">
+                                         <strong>presentation_video_url:</strong> URL to presentation video
+                                     </li>
+                                     <li class="mb-2">
+                                         <strong>literature_review:</strong> Literature review content
+                                     </li>
+                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sample CSV -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-code me-2 text-primary"></i>
+                            Sample CSV Format
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="bg-light p-3 rounded">
+                                                         <code>
+ group_name,title,abstract,member1_name,member2_name,paper1_title,paper2_title,presentation_video_url,literature_review<br>
+ "Team Alpha","User Interface Design for Mobile Applications","This research explores...","John Doe","Jane Smith","Mobile UI Design Patterns","User Experience Optimization","https://www.youtube.com/watch?v=example1","The literature review examines..."<br>
+ "Team Beta","Accessibility in Web Design","Study of web accessibility...","Alice Johnson","Bob Wilson","Web Accessibility Implementation","Inclusive Design Principles","https://www.youtube.com/watch?v=example2","Current research shows..."
+                             </code>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                <strong>Tip:</strong> Use quotes around text fields that contain commas. 
+                                The system will automatically handle special characters and line breaks.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Upload Instructions -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list-ol me-2 text-primary"></i>
+                            Upload Process
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">
+                                <strong>Prepare your CSV file</strong> with the required columns and data
+                            </li>
+                            <li class="mb-2">
+                                <strong>Upload the file</strong> using the form above
+                            </li>
+                            <li class="mb-2">
+                                <strong>Review the results</strong> - you'll see a success message with the number of projects uploaded
+                            </li>
+                            <li class="mb-2">
+                                <strong>Add media files</strong> (posters, videos) individually to each project as needed
+                            </li>
+                            <li class="mb-0">
+                                <strong>Manage projects</strong> from the admin dashboard
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="py-5 bg-white">
+    <div class="container text-center">
+        <h3 class="mb-4">
+            <i class="fas fa-tools me-2"></i>
+            Need Help?
+        </h3>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-tachometer-alt me-2"></i>
+                Back to Dashboard
+            </a>
+            <a href="{{ url_for('gallery') }}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-eye me-2"></i>
+                View Public Gallery
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
+                <i class="fas fa-home me-2"></i>
+                View Landing Page
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,20 @@
+# Example environment variables for COMP 3603 Research Symposium
+# Copy this file to .env and modify as needed
+
+# Flask Configuration
+FLASK_APP=app.py
+FLASK_ENV=development
+FLASK_DEBUG=1
+
+# Security
+SECRET_KEY=your-super-secret-key-change-this-in-production
+
+# Database
+DATABASE_URL=sqlite:///symposium.db
+
+# Admin User (created automatically on first run)
+ADMIN_USERNAME=bob
+ADMIN_PASSWORD=bobpass
+
+# File Upload Settings
+MAX_FILE_SIZE=16777216  # 16MB in bytes

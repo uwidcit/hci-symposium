@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Home - COMP 3603 Research Symposium{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">
+            <i class="fas fa-microscope me-3"></i>
+            COMP 3603 Research Symposium
+        </h1>
+        <p class="lead mb-4">
+            Exploring the Frontiers of Human-Computer Interaction
+        </p>
+        <p class="mb-4">
+            Welcome to our virtual research symposium showcasing innovative projects and literature reviews 
+            from students in Human-Computer Interaction. Discover cutting-edge research, academic insights, 
+            and student achievements in this dynamic field.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{{ url_for('gallery') }}" class="btn btn-light btn-lg">
+                <i class="fas fa-images me-2"></i>
+                Explore Research Gallery
+            </a>
+            <a href="#about" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-info-circle me-2"></i>
+                Learn More
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="mb-4">About the Symposium</h2>
+                <p class="lead text-muted">
+                    This virtual research symposium brings together the academic community to showcase 
+                    student research projects in Human-Computer Interaction. Each project represents 
+                    months of dedicated research, literature review, and academic exploration.
+                </p>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-4 text-center mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-book-open fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Literature Reviews</h5>
+                        <p class="card-text">
+                            Comprehensive analysis of academic papers and research literature 
+                            in the field of Human-Computer Interaction.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 text-center mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Student Collaboration</h5>
+                        <p class="card-text">
+                            Research projects developed by student pairs, fostering teamwork 
+                            and collaborative learning in academic research.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 text-center mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Research Innovation</h5>
+                        <p class="card-text">
+                            Cutting-edge research projects exploring new frontiers in 
+                            human-computer interaction and user experience design.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2 class="mb-4">What You'll Find</h2>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Research Posters:</strong> Visual representations of research findings
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Video Presentations:</strong> Student presentations explaining their research
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Paper Metadata:</strong> Comprehensive information about research papers
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Literature Reviews:</strong> In-depth analysis of academic sources
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Student Profiles:</strong> Information about the research teams
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card border-0 shadow">
+                    <div class="card-body text-center p-5">
+                        <i class="fas fa-graduation-cap fa-4x text-primary mb-3"></i>
+                        <h4>Ready to Explore?</h4>
+                        <p class="text-muted">
+                            Dive into our research gallery to discover innovative projects 
+                            and academic insights from our talented students.
+                        </p>
+                        <a href="{{ url_for('gallery') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            View Research Gallery
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="mb-4">Join the Academic Conversation</h2>
+                <p class="lead text-muted mb-4">
+                    Whether you're a student, researcher, or academic professional, 
+                    our symposium offers valuable insights into the evolving field of 
+                    Human-Computer Interaction.
+                </p>
+                <a href="{{ url_for('gallery') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-search me-2"></i>
+                    Start Exploring Research
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
