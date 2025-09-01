@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}{{ project.title }} - COMP 3603 Research Symposium{% endblock %}
+{% block title %}{{ project.group_name }} - COMP 3603 Research Symposium{% endblock %}
 
 {% block content %}
 <!-- Project Header -->
-<section class="py-5 bg-white">
+<section class="py-4 bg-white">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-10 mx-auto">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
@@ -24,20 +24,23 @@
                     </ol>
                 </nav>
                 
-                <div class="text-center mb-4">
-                    <h1 class="display-5 fw-bold mb-3">
-                        <i class="fas fa-microscope me-3 text-primary"></i>
-                        {{ project.title }}
-                    </h1>
-                    <div class="d-flex justify-content-center gap-3 flex-wrap mb-3">
-                        <span class="badge bg-primary fs-6 px-3 py-2">
-                            <i class="fas fa-users me-1"></i>
-                            Student Research
-                        </span>
-                        <span class="badge bg-success fs-6 px-3 py-2">
-                            <i class="fas fa-calendar me-1"></i>
-                            {{ project.created_at.strftime('%B %Y') }}
-                        </span>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h3 fw-bold mb-0">
+                            <i class="fas fa-users me-2 text-primary"></i>
+                            {{ project.group_name }}
+                        </h1>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('gallery') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Gallery
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>
+                            Home
+                        </a>
                     </div>
                 </div>
             </div>
@@ -51,309 +54,44 @@
         <div class="row">
             <!-- Main Content -->
             <div class="col-lg-8">
-                                 <!-- Research Team -->
-                 <div class="card mb-4">
-                     <div class="card-header">
-                         <h5 class="mb-0">
-                             <i class="fas fa-users me-2"></i>
-                             Research Team
-                         </h5>
-                     </div>
-                     <div class="card-body">
-                         <div class="text-center mb-3">
-                             <h4 class="text-primary">{{ project.group_name }}</h4>
-                         </div>
-                         <div class="row">
-                             <div class="col-md-6">
-                                 <div class="text-center p-3">
-                                     <i class="fas fa-user-graduate fa-3x text-primary mb-2"></i>
-                                     <h6 class="mb-1">Team Member</h6>
-                                     <p class="mb-0 fw-bold">{{ project.member1_name }}</p>
-                                 </div>
-                             </div>
-                             <div class="col-md-6">
-                                 <div class="text-center p-3">
-                                     <i class="fas fa-user-graduate fa-3x text-primary mb-2"></i>
-                                     <h6 class="mb-1">Team Member</h6>
-                                     <p class="mb-0 fw-bold">{{ project.member2_name }}</p>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
+                <!-- Research Team & Papers -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            Research Team & Papers
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Student 1 -->
+                            <div class="col-md-6 mb-4">
+                                <div class="text-center p-4 border rounded">
+                                    <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                                    <h5 class="mb-2">{{ project.member1_name }}</h5>
+                                    <div class="paper-assignment">
+                                        <h6 class="text-muted mb-2">Research Paper:</h6>
+                                        <p class="fw-bold text-primary">{{ project.member1_paper }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Student 2 -->
+                            <div class="col-md-6 mb-4">
+                                <div class="text-center p-4 border rounded">
+                                    <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                                    <h5 class="mb-2">{{ project.member2_name }}</h5>
+                                    <div class="paper-assignment">
+                                        <h6 class="text-muted mb-2">Research Paper:</h6>
+                                        <p class="fw-bold text-primary">{{ project.member2_paper }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                 <!-- Paper Information -->
-                 <div class="card mb-4">
-                     <div class="card-header">
-                         <h5 class="mb-0">
-                             <i class="fas fa-file-text me-2"></i>
-                             Research Papers
-                         </h5>
-                     </div>
-                     <div class="card-body">
-                         <div class="row">
-                             <div class="col-md-6">
-                                 <h6 class="text-primary">Paper 1</h6>
-                                 <p class="mb-2">{{ project.paper1_title }}</p>
-                             </div>
-                             <div class="col-md-6">
-                                 <h6 class="text-primary">Paper 2</h6>
-                                 <p class="mb-2">{{ project.paper2_title }}</p>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-
-                                 <!-- Paper 1 Presentation & Poster -->
-                 <div class="card mb-4">
-                     <div class="card-header">
-                         <h5 class="mb-0">
-                             <i class="fas fa-file-text me-2 text-primary"></i>
-                             {{ project.paper1_title }}
-                         </h5>
-                     </div>
-                     <div class="card-body">
-                         <div class="row">
-                             <!-- Paper 1 Presentation -->
-                             {% if project.presentation_filename %}
-                             <div class="col-md-6 mb-3">
-                                 <h6 class="text-warning mb-2">
-                                     <i class="fas fa-file-pdf me-2"></i>
-                                     Presentation
-                                 </h6>
-                                 <div class="d-grid gap-2">
-                                     <button class="btn btn-warning" type="button" 
-                                             data-bs-toggle="collapse" data-bs-target="#paper1Presentation" 
-                                             aria-expanded="false" aria-controls="paper1Presentation">
-                                         <i class="fas fa-eye me-2"></i>
-                                         View Presentation
-                                     </button>
-                                     <a href="{{ url_for('uploaded_file', filename='presentations/' + project.presentation_filename) }}" 
-                                        class="btn btn-outline-warning" target="_blank" download>
-                                         <i class="fas fa-download me-2"></i>
-                                         Download Presentation
-                                     </a>
-                                 </div>
-                             </div>
-                             {% endif %}
-                             
-                             <!-- Paper 1 Poster -->
-                             {% if project.poster_filename %}
-                             <div class="col-md-6 mb-3">
-                                 <h6 class="text-success mb-2">
-                                     <i class="fas fa-file-pdf me-2"></i>
-                                     Poster
-                                 </h6>
-                                 <div class="d-grid gap-2">
-                                     <button class="btn btn-success" type="button" 
-                                             data-bs-toggle="collapse" data-bs-target="#paper1Poster" 
-                                             aria-expanded="false" aria-controls="paper1Poster">
-                                         <i class="fas fa-eye me-2"></i>
-                                         View Poster
-                                     </button>
-                                     <a href="{{ url_for('uploaded_file', filename='posters/' + project.poster_filename) }}" 
-                                        class="btn btn-outline-success" target="_blank" download>
-                                         <i class="fas fa-download me-2"></i>
-                                         Download Poster
-                                     </a>
-                                 </div>
-                             </div>
-                             {% endif %}
-                         </div>
-                         
-                         <!-- Paper 1 Abstract -->
-                         <div class="mt-3">
-                             <h6 class="text-primary mb-2">Abstract</h6>
-                             <p class="card-text">{{ project.abstract }}</p>
-                         </div>
-                     </div>
-                 </div>
-
-                 <!-- Paper 2 Presentation & Poster -->
-                 <div class="card mb-4">
-                     <div class="card-header">
-                         <h5 class="mb-0">
-                             <i class="fas fa-file-text me-2 text-info"></i>
-                             {{ project.paper2_title }}
-                         </h5>
-                     </div>
-                     <div class="card-body">
-                         <div class="row">
-                             <!-- Paper 2 Presentation -->
-                             {% if project.presentation_filename %}
-                             <div class="col-md-6 mb-3">
-                                 <h6 class="text-warning mb-2">
-                                     <i class="fas fa-file-pdf me-2"></i>
-                                     Presentation
-                                 </h6>
-                                 <div class="d-grid gap-2">
-                                     <button class="btn btn-warning" type="button" 
-                                             data-bs-toggle="collapse" data-bs-target="#paper2Presentation" 
-                                             aria-expanded="false" aria-controls="paper2Presentation">
-                                         <i class="fas fa-eye me-2"></i>
-                                         View Presentation
-                                     </button>
-                                     <a href="{{ url_for('uploaded_file', filename='presentations/' + project.presentation_filename) }}" 
-                                        class="btn btn-outline-warning" target="_blank" download>
-                                         <i class="fas fa-download me-2"></i>
-                                         Download Presentation
-                                     </a>
-                                 </div>
-                             </div>
-                             {% endif %}
-                             
-                             <!-- Paper 2 Poster -->
-                             {% if project.poster_filename %}
-                             <div class="col-md-6 mb-3">
-                                 <h6 class="text-success mb-2">
-                                     <i class="fas fa-file-pdf me-2"></i>
-                                     Poster
-                                 </h6>
-                                 <div class="d-grid gap-2">
-                                     <button class="btn btn-success" type="button" 
-                                             data-bs-toggle="collapse" data-bs-target="#paper2Poster" 
-                                             aria-expanded="false" aria-controls="paper2Poster">
-                                         <i class="fas fa-eye me-2"></i>
-                                         View Poster
-                                     </button>
-                                     <a href="{{ url_for('uploaded_file', filename='posters/' + project.poster_filename) }}" 
-                                        class="btn btn-outline-success" target="_blank" download>
-                                         <i class="fas fa-download me-2"></i>
-                                         Download Poster
-                                     </a>
-                                 </div>
-                             </div>
-                             {% endif %}
-                         </div>
-                         
-                         <!-- Paper 2 Literature Review -->
-                         {% if project.literature_review %}
-                         <div class="mt-3">
-                             <h6 class="text-info mb-2">Literature Review</h6>
-                             <div class="literature-review">
-                                 {{ project.literature_review|replace('\n', '<br>')|safe }}
-                             </div>
-                         </div>
-                         {% endif %}
-                     </div>
-                 </div>
-
-                 <!-- Paper 1 Presentation Preview -->
-                 {% if project.presentation_filename %}
-                 <div class="collapse mb-4" id="paper1Presentation">
-                     <div class="card">
-                         <div class="card-header bg-warning text-white">
-                             <h6 class="mb-0">
-                                 <i class="fas fa-file-pdf me-2"></i>
-                                 {{ project.paper1_title }} - Presentation Preview
-                             </h6>
-                         </div>
-                         <div class="card-body p-0">
-                             <div class="pdf-preview-container" style="height: 500px;">
-                                 <iframe 
-                                     src="{{ url_for('uploaded_file', filename='presentations/' + project.presentation_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
-                                     width="100%" 
-                                     height="100%" 
-                                     frameborder="0"
-                                     style="border: none;">
-                                     <p>Your browser does not support PDF preview. 
-                                     <a href="{{ url_for('uploaded_file', filename='presentations/' + project.presentation_filename) }}" target="_blank">Click here to view the PDF</a></p>
-                                 </iframe>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-                 {% endif %}
-
-                 <!-- Paper 1 Poster Preview -->
-                 {% if project.poster_filename %}
-                 <div class="collapse mb-4" id="paper1Poster">
-                     <div class="card">
-                         <div class="card-header bg-success text-white">
-                             <h6 class="mb-0">
-                                 <i class="fas fa-file-pdf me-2"></i>
-                                 {{ project.paper1_title }} - Poster Preview
-                             </h6>
-                         </div>
-                         <div class="card-body p-0">
-                             <div class="pdf-preview-container" style="height: 500px;">
-                                 <iframe 
-                                     src="{{ url_for('uploaded_file', filename='posters/' + project.poster_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
-                                     width="100%" 
-                                     height="100%" 
-                                     frameborder="0"
-                                     style="border: none;">
-                                     <p>Your browser does not support PDF preview. 
-                                     <a href="{{ url_for('uploaded_file', filename='posters/' + project.poster_filename) }}" target="_blank">Click here to view the PDF</a></p>
-                                 </iframe>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-                 {% endif %}
-
-                 <!-- Paper 2 Presentation Preview -->
-                 {% if project.presentation_filename %}
-                 <div class="collapse mb-4" id="paper2Presentation">
-                     <div class="card">
-                         <div class="card-header bg-warning text-white">
-                             <h6 class="mb-0">
-                                 <i class="fas fa-file-pdf me-2"></i>
-                                 {{ project.paper2_title }} - Presentation Preview
-                             </h6>
-                         </div>
-                         <div class="card-body p-0">
-                             <div class="pdf-preview-container" style="height: 500px;">
-                                 <iframe 
-                                     src="{{ url_for('uploaded_file', filename='presentations/' + project.presentation_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
-                                     width="100%" 
-                                     height="100%" 
-                                     frameborder="0"
-                                     style="border: none;">
-                                     <p>Your browser does not support PDF preview. 
-                                     <a href="{{ url_for('uploaded_file', filename='presentations/' + project.presentation_filename) }}" target="_blank">Click here to view the PDF</a></p>
-                                 </iframe>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-                 {% endif %}
-
-                 <!-- Paper 2 Poster Preview -->
-                 {% if project.poster_filename %}
-                 <div class="collapse mb-4" id="paper2Poster">
-                     <div class="card">
-                         <div class="card-header bg-success text-white">
-                             <h6 class="mb-0">
-                                 <i class="fas fa-file-pdf me-2"></i>
-                                 {{ project.paper2_title }} - Poster Preview
-                             </h6>
-                         </div>
-                         <div class="card-body p-0">
-                             <div class="pdf-preview-container" style="height: 500px;">
-                                 <iframe 
-                                     src="{{ url_for('uploaded_file', filename='posters/' + project.poster_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
-                                     width="100%" 
-                                     height="100%" 
-                                     frameborder="0"
-                                     style="border: none;">
-                                     <p>Your browser does not support PDF preview. 
-                                     <a href="{{ url_for('uploaded_file', filename='posters/' + project.poster_filename) }}" target="_blank">Click here to view the PDF</a></p>
-                                 </iframe>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-                 {% endif %}
-
-
-
-
-            </div>
-
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <!-- Media Resources -->
+                <!-- Research Resources -->
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
@@ -362,125 +100,215 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                                                 {% if project.poster_filename %}
-                         <div class="mb-3">
-                             <h6 class="text-success">
-                                 <i class="fas fa-file-pdf me-2"></i>
-                                 Research Poster
-                             </h6>
-                             <div class="d-grid gap-2">
-                                 <a href="{{ url_for('uploaded_file', filename='posters/' + project.poster_filename) }}" 
-                                    class="btn btn-success" target="_blank">
-                                     <i class="fas fa-eye me-2"></i>
-                                     Preview Poster
-                                 </a>
-                                 <a href="{{ url_for('uploaded_file', filename='posters/' + project.poster_filename) }}" 
-                                    class="btn btn-outline-success" target="_blank" download>
-                                     <i class="fas fa-download me-2"></i>
-                                     Download Poster
-                                 </a>
-                             </div>
-                         </div>
-                         {% endif %}
-
-                         {% if project.presentation_filename %}
-                         <div class="mb-3">
-                             <h6 class="text-warning">
-                                 <i class="fas fa-file-pdf me-2"></i>
-                                 Literature Review Presentation
-                             </h6>
-                             <div class="d-grid gap-2">
-                                 <a href="{{ url_for('uploaded_file', filename='presentations/' + project.presentation_filename) }}" 
-                                    class="btn btn-warning" target="_blank">
-                                     <i class="fas fa-eye me-2"></i>
-                                     Preview Presentation
-                                 </a>
-                                 <a href="{{ url_for('uploaded_file', filename='presentations/' + project.presentation_filename) }}" 
-                                    class="btn btn-outline-warning" target="_blank" download>
-                                     <i class="fas fa-download me-2"></i>
-                                     Download Presentation
-                                 </a>
-                             </div>
-                         </div>
-                         {% endif %}
-
-                         {% if project.presentation_video_url %}
-                         <div class="mb-3">
-                             <h6 class="text-info">
-                                 <i class="fas fa-video me-2"></i>
-                                 Video Presentation
-                             </h6>
-                             <a href="{{ project.presentation_video_url }}" 
-                                class="btn btn-info w-100" target="_blank">
-                                 <i class="fas fa-play me-2"></i>
-                                 Watch Video
-                             </a>
-                         </div>
-                         {% endif %}
-
-                         {% if not project.poster_filename and not project.presentation_filename and not project.presentation_video_url %}
-                        <div class="text-center text-muted">
-                            <i class="fas fa-info-circle fa-2x mb-2"></i>
-                            <p class="mb-0">No media resources available for this project yet.</p>
+                        <div class="row">
+                            <!-- Button 1: Preview Slide Decks -->
+                            <div class="col-md-4 mb-3">
+                                <div class="text-center">
+                                    {% if project.combined_slide_decks_filename %}
+                                    <button class="btn btn-warning btn-lg w-100" type="button" 
+                                            data-bs-toggle="collapse" data-bs-target="#slideDecksPreview" 
+                                            aria-expanded="false" aria-controls="slideDecksPreview">
+                                        <i class="fas fa-eye me-2"></i>
+                                        Preview Slide Decks
+                                    </button>
+                                    <small class="text-muted d-block mt-2">Both students' presentations</small>
+                                    {% else %}
+                                    <button class="btn btn-outline-secondary btn-lg w-100" disabled>
+                                        <i class="fas fa-eye me-2"></i>
+                                        Preview Slide Decks
+                                    </button>
+                                    <small class="text-muted d-block mt-2">Not available</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Button 2: Preview Posters -->
+                            <div class="col-md-4 mb-3">
+                                <div class="text-center">
+                                    {% if project.combined_posters_filename %}
+                                    <button class="btn btn-success btn-lg w-100" type="button" 
+                                            data-bs-toggle="collapse" data-bs-target="#postersPreview" 
+                                            aria-expanded="false" aria-controls="postersPreview">
+                                        <i class="fas fa-eye me-2"></i>
+                                        Preview Posters
+                                    </button>
+                                    <small class="text-muted d-block mt-2">Both students' posters</small>
+                                    {% else %}
+                                    <button class="btn btn-outline-secondary btn-lg w-100" disabled>
+                                        <i class="fas fa-eye me-2"></i>
+                                        Preview Posters
+                                    </button>
+                                    <small class="text-muted d-block mt-2">Not available</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Button 3: View Video Presentation -->
+                            <div class="col-md-4 mb-3">
+                                <div class="text-center">
+                                    {% if project.presentation_video_url %}
+                                    <a href="{{ project.presentation_video_url }}" 
+                                       class="btn btn-info btn-lg w-100" target="_blank">
+                                        <i class="fas fa-play me-2"></i>
+                                        View Video Presentation
+                                    </a>
+                                    <small class="text-muted d-block mt-2">Watch presentation video</small>
+                                    {% else %}
+                                    <button class="btn btn-outline-secondary btn-lg w-100" disabled>
+                                        <i class="fas fa-play me-2"></i>
+                                        View Video Presentation
+                                    </button>
+                                    <small class="text-muted d-block mt-2">Not available</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Download Links (if files are available) -->
+                        {% if project.combined_slide_decks_filename or project.combined_posters_filename %}
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="text-muted mb-3 text-center">Download Resources</h6>
+                            <div class="row">
+                                {% if project.combined_slide_decks_filename %}
+                                <div class="col-md-6 mb-2">
+                                    <a href="{{ url_for('uploaded_file', filename='presentations/' + project.combined_slide_decks_filename) }}" 
+                                       class="btn btn-outline-warning w-100" target="_blank" download>
+                                        <i class="fas fa-download me-2"></i>
+                                        Download Slide Decks
+                                    </a>
+                                </div>
+                                {% endif %}
+                                {% if project.combined_posters_filename %}
+                                <div class="col-md-6 mb-2">
+                                    <a href="{{ url_for('uploaded_file', filename='posters/' + project.combined_posters_filename) }}" 
+                                       class="btn btn-outline-success w-100" target="_blank" download>
+                                        <i class="fas fa-download me-2"></i>
+                                        Download Posters
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
                         </div>
                         {% endif %}
                     </div>
                 </div>
+            </div>
 
-                <!-- Project Stats -->
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Project Tags -->
+                {% if project.tags %}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-chart-bar me-2"></i>
-                            Project Information
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-6">
-                                <div class="stat-item">
-                                    <div class="stat-number">{{ project.created_at.strftime('%d') }}</div>
-                                    <div class="stat-label">Day</div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="stat-item">
-                                    <div class="stat-number">{{ project.created_at.strftime('%m') }}</div>
-                                    <div class="stat-label">Month</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center mt-2">
-                            <small class="text-muted">
-                                Created: {{ project.created_at.strftime('%B %d, %Y') }}
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Navigation -->
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title mb-3">
-                            <i class="fas fa-compass me-2"></i>
-                            Navigation
+                        <h6 class="mb-0">
+                            <i class="fas fa-tags me-2"></i>
+                            Project Tags
                         </h6>
-                        <div class="d-grid gap-2">
-                            <a href="{{ url_for('gallery') }}" class="btn btn-outline-primary">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                Back to Gallery
-                            </a>
-                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-home me-2"></i>
-                                Return Home
-                            </a>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for tag in project.tags.split(',') %}
+                                {% if tag.strip() %}
+                                <span class="badge bg-primary">{{ tag.strip() }}</span>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
+                {% endif %}
+
+                <!-- Similar Projects -->
+                {% if similar_projects %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            Similar Projects
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        {% for similar_project in similar_projects %}
+                        <div class="mb-3">
+                            <a href="{{ url_for('view_project', project_id=similar_project.id) }}" 
+                               class="text-decoration-none">
+                                <h6 class="mb-1 text-primary">{{ similar_project.group_name }}</h6>
+                                <p class="mb-1 text-muted small">{{ similar_project.paper1_title[:40] }}{% if similar_project.paper1_title|length > 40 %}...{% endif %}</p>
+                                {% if similar_project.tags %}
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for tag in similar_project.tags.split(',')[:2] %}
+                                        {% if tag.strip() %}
+                                        <span class="badge bg-light text-dark small">{{ tag.strip() }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </a>
+                        </div>
+                        {% if not loop.last %}<hr class="my-2">{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+
             </div>
         </div>
     </div>
 </section>
+
+<!-- Slide Decks Preview Modal -->
+{% if project.combined_slide_decks_filename %}
+<div class="collapse mb-4" id="slideDecksPreview">
+    <div class="card">
+        <div class="card-header bg-warning text-white">
+            <h6 class="mb-0">
+                <i class="fas fa-file-pdf me-2"></i>
+                Combined Slide Decks Preview
+            </h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="pdf-preview-container" style="height: 600px;">
+                <iframe 
+                    src="{{ url_for('uploaded_file', filename='presentations/' + project.combined_slide_decks_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0"
+                    style="border: none;">
+                    <p>Your browser does not support PDF preview. 
+                    <a href="{{ url_for('uploaded_file', filename='presentations/' + project.combined_slide_decks_filename) }}" target="_blank">Click here to view the PDF</a></p>
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Posters Preview Modal -->
+{% if project.combined_posters_filename %}
+<div class="collapse mb-4" id="postersPreview">
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h6 class="mb-0">
+                <i class="fas fa-file-pdf me-2"></i>
+                Combined Posters Preview
+            </h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="pdf-preview-container" style="height: 600px;">
+                <iframe 
+                    src="{{ url_for('uploaded_file', filename='posters/' + project.combined_posters_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0"
+                    style="border: none;">
+                    <p>Your browser does not support PDF preview. 
+                    <a href="{{ url_for('uploaded_file', filename='posters/' + project.combined_posters_filename) }}" target="_blank">Click here to view the PDF</a></p>
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 <!-- Related Projects Section -->
 <section class="py-5 bg-white">
@@ -501,63 +329,37 @@
                 View All Research Projects
             </a>
         </div>
-             </div>
-     </section>
-     
-           <script>
-      // Handle toggle button text changes for all paper previews
-      document.addEventListener('DOMContentLoaded', function() {
-          // Paper 1 Presentation toggle
-          const paper1PresentationToggle = document.querySelector('[data-bs-target="#paper1Presentation"]');
-          if (paper1PresentationToggle) {
-              paper1PresentationToggle.addEventListener('click', function() {
-                  const button = this;
-                  if (button.textContent.includes('View')) {
-                      button.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide Presentation';
-                  } else {
-                      button.innerHTML = '<i class="fas fa-eye me-2"></i>View Presentation';
-                  }
-              });
-          }
-          
-          // Paper 1 Poster toggle
-          const paper1PosterToggle = document.querySelector('[data-bs-target="#paper1Poster"]');
-          if (paper1PosterToggle) {
-              paper1PosterToggle.addEventListener('click', function() {
-                  const button = this;
-                  if (button.textContent.includes('View')) {
-                      button.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide Poster';
-                  } else {
-                      button.innerHTML = '<i class="fas fa-eye me-2"></i>View Poster';
-                  }
-              });
-          }
-          
-          // Paper 2 Presentation toggle
-          const paper2PresentationToggle = document.querySelector('[data-bs-target="#paper2Presentation"]');
-          if (paper2PresentationToggle) {
-              paper2PresentationToggle.addEventListener('click', function() {
-                  const button = this;
-                  if (button.textContent.includes('View')) {
-                      button.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide Presentation';
-                  } else {
-                      button.innerHTML = '<i class="fas fa-eye me-2"></i>View Presentation';
-                  }
-              });
-          }
-          
-          // Paper 2 Poster toggle
-          const paper2PosterToggle = document.querySelector('[data-bs-target="#paper2Poster"]');
-          if (paper2PosterToggle) {
-              paper2PosterToggle.addEventListener('click', function() {
-                  const button = this;
-                  if (button.textContent.includes('View')) {
-                      button.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide Poster';
-                  } else {
-                      button.innerHTML = '<i class="fas fa-eye me-2"></i>View Poster';
-                  }
-              });
-          }
-      });
-      </script>
-     {% endblock %}
+    </div>
+</section>
+
+<script>
+// Handle toggle button text changes for preview buttons
+document.addEventListener('DOMContentLoaded', function() {
+    // Slide decks preview toggle
+    const slideDecksToggle = document.querySelector('[data-bs-target="#slideDecksPreview"]');
+    if (slideDecksToggle) {
+        slideDecksToggle.addEventListener('click', function() {
+            const button = this;
+            if (button.textContent.includes('Preview')) {
+                button.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide Slide Decks';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye me-2"></i>Preview Slide Decks';
+            }
+        });
+    }
+    
+    // Posters preview toggle
+    const postersToggle = document.querySelector('[data-bs-target="#postersPreview"]');
+    if (postersToggle) {
+        postersToggle.addEventListener('click', function() {
+            const button = this;
+            if (button.textContent.includes('Preview')) {
+                button.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide Posters';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye me-2"></i>Preview Posters';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

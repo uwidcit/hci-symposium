@@ -55,21 +55,9 @@
                                                 id="group_name" name="group_name" value="{{ project.group_name }}" required>
                                      </div>
                                      
-                                     <div class="mb-3">
-                                         <label for="title" class="form-label">
-                                             <i class="fas fa-heading me-2"></i>Project Title
-                                         </label>
-                                         <input type="text" class="form-control form-control-lg" 
-                                                id="title" name="title" value="{{ project.title }}" required>
-                                     </div>
+
                                      
-                                     <div class="mb-3">
-                                         <label for="abstract" class="form-label">
-                                             <i class="fas fa-file-alt me-2"></i>Abstract
-                                         </label>
-                                         <textarea class="form-control" id="abstract" name="abstract" 
-                                                   rows="4" required>{{ project.abstract }}</textarea>
-                                     </div>
+
                                      
                                      <div class="row">
                                          <div class="col-md-6">
@@ -117,6 +105,34 @@
                                          </div>
                                      </div>
                                      
+                                     <!-- Student-Paper Associations -->
+                                     <div class="row">
+                                         <div class="col-md-6">
+                                             <div class="mb-3">
+                                                 <label for="member1_paper" class="form-label">
+                                                     <i class="fas fa-user-graduate me-2"></i>{{ project.member1_name }}'s Paper
+                                                 </label>
+                                                 <select class="form-control" id="member1_paper" name="member1_paper" required>
+                                                     <option value="{{ project.paper1_title }}" {% if project.member1_paper == project.paper1_title %}selected{% endif %}>{{ project.paper1_title }}</option>
+                                                     <option value="{{ project.paper2_title }}" {% if project.member1_paper == project.paper2_title %}selected{% endif %}>{{ project.paper2_title }}</option>
+                                                 </select>
+                                                 <div class="form-text">Which paper did {{ project.member1_name }} work on?</div>
+                                             </div>
+                                         </div>
+                                         <div class="col-md-6">
+                                             <div class="mb-3">
+                                                 <label for="member2_paper" class="form-label">
+                                                     <i class="fas fa-user-graduate me-2"></i>{{ project.member2_name }}'s Paper
+                                                 </label>
+                                                 <select class="form-control" id="member2_paper" name="member2_paper" required>
+                                                     <option value="{{ project.paper1_title }}" {% if project.member2_paper == project.paper1_title %}selected{% endif %}>{{ project.paper1_title }}</option>
+                                                     <option value="{{ project.paper2_title }}" {% if project.member2_paper == project.paper2_title %}selected{% endif %}>{{ project.paper2_title }}</option>
+                                                 </select>
+                                                 <div class="form-text">Which paper did {{ project.member2_name }} work on?</div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     
                                      <div class="mb-3">
                                          <label for="presentation_video_url" class="form-label">
                                              <i class="fas fa-video me-2"></i>Presentation Video URL
@@ -129,17 +145,21 @@
                                              URL to the presentation video (YouTube, etc.)
                                          </div>
                                      </div>
+                                     
+                                     <div class="mb-3">
+                                         <label for="tags" class="form-label">
+                                             <i class="fas fa-tags me-2"></i>Project Tags
+                                         </label>
+                                         <input type="text" class="form-control" 
+                                                id="tags" name="tags" 
+                                                value="{{ project.tags or '' }}" 
+                                                placeholder="mobile, ui design, accessibility, vr, education">
+                                         <div class="form-text">
+                                             Comma-separated tags for categorizing and finding similar projects
+                                         </div>
+                                     </div>
                                     
-                                    <div class="mb-3">
-                                        <label for="literature_review" class="form-label">
-                                            <i class="fas fa-book-open me-2"></i>Literature Review
-                                        </label>
-                                        <textarea class="form-control" id="literature_review" name="literature_review" 
-                                                  rows="6" placeholder="Literature review content...">{{ project.literature_review or '' }}</textarea>
-                                        <div class="form-text">
-                                            Detailed literature review and analysis
-                                        </div>
-                                    </div>
+
                                 </div>
                                 
                                 <!-- Media Uploads -->
@@ -151,74 +171,73 @@
                                                 Media Files
                                             </h6>
                                             
-                                            <!-- Poster Upload -->
+                                            <!-- Combined Slide Decks Upload -->
                                             <div class="mb-3">
-                                                <label for="poster" class="form-label">
-                                                    <i class="fas fa-file-pdf me-2 text-success"></i>Research Poster
+                                                <label for="combined_slide_decks" class="form-label">
+                                                    <i class="fas fa-file-pdf me-2 text-warning"></i>Combined Slide Decks
                                                 </label>
-                                                <input type="file" class="form-control" id="poster" name="poster" accept=".pdf">
-                                                <div class="form-text">PDF format only</div>
-                                                {% if project.poster_filename %}
+                                                <input type="file" class="form-control" id="combined_slide_decks" name="combined_slide_decks" accept=".pdf">
+                                                <div class="form-text">PDF with both students' slide decks combined</div>
+                                                {% if project.combined_slide_decks_filename %}
                                                 <div class="mt-2">
-                                                    <small class="text-success">
+                                                    <small class="text-warning">
                                                         <i class="fas fa-check-circle me-1"></i>
-                                                        Current: {{ project.poster_filename }}
+                                                        Current: {{ project.combined_slide_decks_filename }}
                                                     </small>
                                                 </div>
                                                 {% endif %}
                                             </div>
                                             
-                                                                                         <!-- Presentation Upload -->
-                                             <div class="mb-3">
-                                                 <label for="presentation" class="form-label">
-                                                     <i class="fas fa-file-pdf me-2 text-warning"></i>Literature Review Presentation
-                                                 </label>
-                                                 <input type="file" class="form-control" id="presentation" name="presentation" 
-                                                        accept=".pdf">
-                                                 <div class="form-text">PDF format only</div>
-                                                 {% if project.presentation_filename %}
-                                                 <div class="mt-2">
-                                                     <small class="text-warning">
-                                                         <i class="fas fa-check-circle me-1"></i>
-                                                         Current: {{ project.presentation_filename }}
-                                                     </small>
-                                                 </div>
-                                                 {% endif %}
-                                             </div>
+                                            <!-- Combined Posters Upload -->
+                                            <div class="mb-3">
+                                                <label for="combined_posters" class="form-label">
+                                                    <i class="fas fa-file-pdf me-2 text-success"></i>Combined Posters
+                                                </label>
+                                                <input type="file" class="form-control" id="combined_posters" name="combined_posters" accept=".pdf">
+                                                <div class="form-text">PDF with both students' posters combined</div>
+                                                {% if project.combined_posters_filename %}
+                                                <div class="mt-2">
+                                                    <small class="text-success">
+                                                        <i class="fas fa-check-circle me-1"></i>
+                                                        Current: {{ project.combined_posters_filename }}
+                                                    </small>
+                                                </div>
+                                                {% endif %}
+                                            </div>
                                             
                                             <!-- Current Status -->
                                             <div class="mt-3 p-3 bg-white rounded">
                                                 <h6 class="mb-2">Current Status</h6>
                                                 <div class="d-flex flex-column gap-1">
-                                                    {% if project.poster_filename %}
-                                                    <span class="badge bg-success">
-                                                        <i class="fas fa-file-pdf me-1"></i>Poster Available
+                                                    {% if project.combined_slide_decks_filename %}
+                                                    <span class="badge bg-warning">
+                                                        <i class="fas fa-file-pdf me-1"></i>Slide Decks Available
                                                     </span>
                                                     {% else %}
                                                     <span class="badge bg-secondary">
-                                                        <i class="fas fa-file-pdf me-1"></i>No Poster
+                                                        <i class="fas fa-file-pdf me-1"></i>No Slide Decks
                                                     </span>
                                                     {% endif %}
                                                     
-                                                                                                         {% if project.presentation_filename %}
-                                                     <span class="badge bg-warning">
-                                                         <i class="fas fa-file-pdf me-1"></i>Presentation Available
-                                                     </span>
-                                                     {% else %}
-                                                     <span class="badge bg-secondary">
-                                                         <i class="fas fa-file-pdf me-1"></i>No Presentation
-                                                     </span>
-                                                     {% endif %}
+                                                    {% if project.combined_posters_filename %}
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-file-pdf me-1"></i>Posters Available
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="badge bg-secondary">
+                                                        <i class="fas fa-file-pdf me-1"></i>No Posters
+                                                    </span>
+                                                    {% endif %}
                                                      
-                                                     {% if project.presentation_video_url %}
-                                                     <span class="badge bg-info">
-                                                         <i class="fas fa-video me-1"></i>Video URL Available
-                                                     </span>
-                                                     {% else %}
-                                                     <span class="badge bg-secondary">
-                                                         <i class="fas fa-video me-1"></i>No Video URL
-                                                     </span>
-                                                     {% endif %}
+                                                    {% if project.presentation_video_url %}
+                                                    <span class="badge bg-info">
+                                                        <i class="fas fa-video me-1"></i>Video URL Available
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="badge bg-secondary">
+                                                        <i class="fas fa-video me-1"></i>No Video URL
+                                                    </span>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>

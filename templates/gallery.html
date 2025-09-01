@@ -44,8 +44,8 @@
                 <div class="card project-card h-100">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
-                            <i class="fas fa-microscope me-2"></i>
-                            {{ project.title[:50] }}{% if project.title|length > 50 %}...{% endif %}
+                            <i class="fas fa-users me-2"></i>
+                            {{ project.group_name }}
                         </h5>
                     </div>
                     <div class="card-body d-flex flex-column">
@@ -60,15 +60,7 @@
                              </p>
                          </div>
                         
-                        <div class="mb-3">
-                            <h6 class="text-primary">
-                                <i class="fas fa-file-alt me-2"></i>
-                                Abstract
-                            </h6>
-                            <p class="card-text">
-                                {{ project.abstract[:150] }}{% if project.abstract|length > 150 %}...{% endif %}
-                            </p>
-                        </div>
+
                         
                         <div class="mb-3">
                             <h6 class="text-primary">

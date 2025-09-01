@@ -53,6 +53,7 @@ flask init
 ```
 
 This command will:
+- **Delete existing database** (if it exists) for a fresh start
 - Create the database and tables
 - Create admin user "bob" with password "bobpass"
 - Insert sample research projects
@@ -93,8 +94,9 @@ The application will start on `http://localhost:5000`
 4. Save changes
 
 #### 4. Adding Media Files
-- **Posters**: PDF format only
-- **Videos**: MP4, AVI, or MOV formats
+- **Combined Slide Decks**: PDF with both students' presentations combined
+- **Combined Posters**: PDF with both students' posters combined
+- **Video Presentations**: YouTube or other video URLs
 - Files are automatically organized in the uploads directory
 
 ### For Visitors
@@ -105,29 +107,30 @@ The application will start on `http://localhost:5000`
 3. Click on any project to see detailed information
 
 #### 2. Accessing Resources
-- Download research posters as PDFs
+- Preview and download combined slide decks (both students' presentations in one PDF)
+- Preview and download combined posters (both students' posters in one PDF)
 - Watch video presentations
-- Read literature reviews and abstracts
+- See which paper each student worked on
 
 ## CSV Format Requirements
 
 ### Required Columns
 - `group_name`: Research group name
-- `title`: Research project title
-- `abstract`: Project abstract/summary
 - `member1_name`: First team member
 - `member2_name`: Second team member
 - `paper1_title`: First paper title
 - `paper2_title`: Second paper title
 
 ### Optional Columns
+- `member1_paper`: Which paper member1 worked on (defaults to paper1_title if not specified)
+- `member2_paper`: Which paper member2 worked on (defaults to paper2_title if not specified)
 - `presentation_video_url`: URL to presentation video
-- `literature_review`: Literature review content
+- `tags`: Comma-separated tags for categorizing and finding similar projects
 
 ### Sample CSV
 ```csv
-group_name,title,abstract,member1_name,member2_name,paper1_title,paper2_title,presentation_video_url,literature_review
-"Team Alpha","Project Title","Abstract text...","Member 1","Member 2","Paper 1 Title","Paper 2 Title","https://youtube.com/...","Literature review..."
+group_name,member1_name,member2_name,paper1_title,paper2_title,member1_paper,member2_paper,presentation_video_url,tags
+"Team Alpha","Member 1","Member 2","Paper 1 Title","Paper 2 Title","Paper 1 Title","Paper 2 Title","https://youtube.com/...","mobile, ui design, accessibility"
 ```
 
 ## File Structure
@@ -176,6 +179,7 @@ gallery/
 - Implement proper user authentication for production
 - Add rate limiting for file uploads
 - Validate file types and sizes
+- **`flask init` will delete any existing database** - use with caution in production
 
 ## Production Deployment
 

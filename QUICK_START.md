@@ -12,6 +12,7 @@ pip install -r requirements.txt
 flask init
 ```
 This will:
+- **Delete existing database** (if it exists) for a fresh start
 - Create the database and tables
 - Create admin user "bob" with password "bobpass"
 - Insert sample research projects
@@ -91,8 +92,8 @@ gallery/
 - Add new features in `app.py`
 
 ## 📝 CSV Format
-Required columns: `group_name`, `title`, `abstract`, `member1_name`, `member2_name`, `paper1_title`, `paper2_title`
-Optional columns: `presentation_video_url`, `literature_review`
+Required columns: `group_name`, `member1_name`, `member2_name`, `paper1_title`, `paper2_title`
+Optional columns: `member1_paper`, `member2_paper`, `presentation_video_url`, `tags`
 
 ## 🚨 Important Notes
 - Change default admin credentials in production

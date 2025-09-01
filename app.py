@@ -46,16 +46,19 @@ class User(UserMixin, db.Model):
 class ResearchProject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     group_name = db.Column(db.String(100), nullable=False)
-    title = db.Column(db.String(200), nullable=False)
-    abstract = db.Column(db.Text, nullable=False)
     member1_name = db.Column(db.String(100), nullable=False)
     member2_name = db.Column(db.String(100), nullable=False)
     paper1_title = db.Column(db.String(200), nullable=False)
     paper2_title = db.Column(db.String(200), nullable=False)
+    # Associate students with their specific papers
+    member1_paper = db.Column(db.String(200), nullable=False)  # Which paper member1 worked on
+    member2_paper = db.Column(db.String(200), nullable=False)  # Which paper member2 worked on
     presentation_video_url = db.Column(db.String(500))
-    poster_filename = db.Column(db.String(200))
-    presentation_filename = db.Column(db.String(200))
-    literature_review = db.Column(db.Text)
+    # Combined PDF files: 2 slide decks in one PDF, 2 posters in another
+    combined_slide_decks_filename = db.Column(db.String(200))  # PDF with both slide decks
+    combined_posters_filename = db.Column(db.String(200))      # PDF with both posters
+    # Tags for categorizing and finding similar projects
+    tags = db.Column(db.String(500))  # Comma-separated tags
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -132,14 +135,14 @@ def upload_csv():
                 for _, row in df.iterrows():
                     project = ResearchProject(
                         group_name=row['group_name'],
-                        title=row['title'],
-                        abstract=row['abstract'],
                         member1_name=row['member1_name'],
                         member2_name=row['member2_name'],
                         paper1_title=row['paper1_title'],
                         paper2_title=row['paper2_title'],
+                        member1_paper=row.get('member1_paper', row['paper1_title']),  # Default to paper1 if not specified
+                        member2_paper=row.get('member2_paper', row['paper2_title']),  # Default to paper2 if not specified
                         presentation_video_url=row.get('presentation_video_url', ''),
-                        literature_review=row.get('literature_review', '')
+                        tags=row.get('tags', '')  # Comma-separated tags
                     )
                     db.session.add(project)
                 
@@ -165,29 +168,29 @@ def edit_project(project_id):
     
     if request.method == 'POST':
         project.group_name = request.form['group_name']
-        project.title = request.form['title']
-        project.abstract = request.form['abstract']
         project.member1_name = request.form['member1_name']
         project.member2_name = request.form['member2_name']
         project.paper1_title = request.form['paper1_title']
         project.paper2_title = request.form['paper2_title']
+        project.member1_paper = request.form.get('member1_paper', request.form['paper1_title'])
+        project.member2_paper = request.form.get('member2_paper', request.form['paper2_title'])
         project.presentation_video_url = request.form['presentation_video_url']
-        project.literature_review = request.form['literature_review']
+        project.tags = request.form.get('tags', '')
         
-        # Handle file uploads
-        if 'poster' in request.files and request.files['poster'].filename:
-            poster = request.files['poster']
-            if poster and poster.filename.endswith('.pdf'):
-                filename = secure_filename(f"{uuid.uuid4()}_{poster.filename}")
-                poster.save(os.path.join(app.config['UPLOAD_FOLDER'], 'posters', filename))
-                project.poster_filename = filename
+        # Handle combined file uploads
+        if 'combined_slide_decks' in request.files and request.files['combined_slide_decks'].filename:
+            slide_decks = request.files['combined_slide_decks']
+            if slide_decks and slide_decks.filename.endswith('.pdf'):
+                filename = secure_filename(f"{uuid.uuid4()}_{slide_decks.filename}")
+                slide_decks.save(os.path.join(app.config['UPLOAD_FOLDER'], 'presentations', filename))
+                project.combined_slide_decks_filename = filename
         
-        if 'presentation' in request.files and request.files['presentation'].filename:
-            presentation = request.files['presentation']
-            if presentation and presentation.filename.endswith('.pdf'):
-                filename = secure_filename(f"{uuid.uuid4()}_{presentation.filename}")
-                presentation.save(os.path.join(app.config['UPLOAD_FOLDER'], 'presentations', filename))
-                project.presentation_filename = filename
+        if 'combined_posters' in request.files and request.files['combined_posters'].filename:
+            posters = request.files['combined_posters']
+            if posters and posters.filename.endswith('.pdf'):
+                filename = secure_filename(f"{uuid.uuid4()}_{posters.filename}")
+                posters.save(os.path.join(app.config['UPLOAD_FOLDER'], 'posters', filename))
+                project.combined_posters_filename = filename
         
         db.session.commit()
         flash('Project updated successfully')
@@ -216,16 +219,53 @@ def uploaded_file(filename):
 def view_project(project_id):
     """Public view of a specific research project"""
     project = ResearchProject.query.get_or_404(project_id)
-    return render_template('view_project.html', project=project)
+    
+    # Find similar projects based on tags
+    similar_projects = []
+    if project.tags:
+        project_tags = [tag.strip().lower() for tag in project.tags.split(',') if tag.strip()]
+        if project_tags:
+            # Find projects with matching tags (excluding current project)
+            all_projects = ResearchProject.query.filter(ResearchProject.id != project_id).all()
+            for other_project in all_projects:
+                if other_project.tags:
+                    other_tags = [tag.strip().lower() for tag in other_project.tags.split(',') if tag.strip()]
+                    # Check if there's any tag overlap
+                    if any(tag in other_tags for tag in project_tags):
+                        similar_projects.append(other_project)
+            
+            # Limit to 3 similar projects
+            similar_projects = similar_projects[:3]
+    
+    return render_template('view_project.html', project=project, similar_projects=similar_projects)
 
 # Create admin user and database tables
 def init_db():
     with app.app_context():
         # Delete existing database if it exists
-        db_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
-        if os.path.exists(db_path):
-            os.remove(db_path)
-            print("Existing database deleted.")
+        db_uri = app.config['SQLALCHEMY_DATABASE_URI']
+        if db_uri.startswith('sqlite:///'):
+            # Handle Flask's default instance directory behavior
+            if db_uri == 'sqlite:///symposium.db':
+                # Check both current directory and instance directory
+                db_paths = ['symposium.db', 'instance/symposium.db']
+            else:
+                db_paths = [db_uri.replace('sqlite:///', '')]
+            
+            deleted_any = False
+            for db_path in db_paths:
+                if os.path.exists(db_path):
+                    try:
+                        os.remove(db_path)
+                        print(f"Existing database deleted: {db_path}")
+                        deleted_any = True
+                    except Exception as e:
+                        print(f"Warning: Could not delete database {db_path}: {e}")
+            
+            if not deleted_any:
+                print("No existing database found to delete.")
+        else:
+            print("Note: Database deletion only supported for SQLite databases.")
         
         db.create_all()
         
@@ -248,10 +288,29 @@ def init_command():
     click.echo("Initializing database...")
     
     # Delete existing database if it exists
-    db_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
-    if os.path.exists(db_path):
-        os.remove(db_path)
-        click.echo("Existing database deleted.")
+    db_uri = app.config['SQLALCHEMY_DATABASE_URI']
+    if db_uri.startswith('sqlite:///'):
+        # Handle Flask's default instance directory behavior
+        if db_uri == 'sqlite:///symposium.db':
+            # Check both current directory and instance directory
+            db_paths = ['symposium.db', 'instance/symposium.db']
+        else:
+            db_paths = [db_uri.replace('sqlite:///', '')]
+        
+        deleted_any = False
+        for db_path in db_paths:
+            if os.path.exists(db_path):
+                try:
+                    os.remove(db_path)
+                    click.echo(f"Existing database deleted: {db_path}")
+                    deleted_any = True
+                except Exception as e:
+                    click.echo(f"Warning: Could not delete database {db_path}: {e}")
+        
+        if not deleted_any:
+            click.echo("No existing database found to delete.")
+    else:
+        click.echo("Note: Database deletion only supported for SQLite databases.")
     
     # Ensure upload directories exist
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -355,36 +414,36 @@ def insert_sample_data():
     sample_projects = [
         {
             'group_name': 'Team Alpha',
-            'title': 'User Interface Design for Mobile Applications',
-            'abstract': 'This research explores the impact of user interface design on user experience in mobile applications. The study examines various design patterns and their effectiveness in improving user engagement and satisfaction.',
             'member1_name': 'John Doe',
             'member2_name': 'Jane Smith',
             'paper1_title': 'Mobile UI Design Patterns: A Comprehensive Analysis',
             'paper2_title': 'User Experience Optimization in Mobile Applications',
+            'member1_paper': 'Mobile UI Design Patterns: A Comprehensive Analysis',
+            'member2_paper': 'User Experience Optimization in Mobile Applications',
             'presentation_video_url': 'https://www.youtube.com/watch?v=example1',
-            'literature_review': 'The literature review examines current trends in mobile interface design, focusing on usability principles and user-centered design approaches. Key findings indicate that intuitive navigation and consistent visual elements significantly improve user satisfaction.'
+            'tags': 'mobile, ui design, user experience, interface'
         },
         {
             'group_name': 'Team Beta',
-            'title': 'Accessibility in Web Design',
-            'abstract': 'This study investigates web accessibility standards and their implementation in modern web applications. The research focuses on WCAG guidelines and their practical application for users with disabilities.',
             'member1_name': 'Alice Johnson',
             'member2_name': 'Bob Wilson',
             'paper1_title': 'Web Accessibility Implementation: Best Practices',
             'paper2_title': 'Inclusive Design Principles for Digital Interfaces',
+            'member1_paper': 'Web Accessibility Implementation: Best Practices',
+            'member2_paper': 'Inclusive Design Principles for Digital Interfaces',
             'presentation_video_url': 'https://www.youtube.com/watch?v=example2',
-            'literature_review': 'The literature review analyzes current web accessibility standards and their impact on user experience for individuals with various disabilities. Research shows that accessible design benefits all users, not just those with disabilities.'
+            'tags': 'accessibility, web design, inclusive design, ui design'
         },
         {
             'group_name': 'Team Gamma',
-            'title': 'Virtual Reality in Education',
-            'abstract': 'This research explores the potential of virtual reality technology in educational settings. The study examines how VR can enhance learning experiences and improve student engagement in various subjects.',
             'member1_name': 'Carol Davis',
             'member2_name': 'David Brown',
             'paper1_title': 'VR in Educational Contexts: A Meta-Analysis',
             'paper2_title': 'Immersive Learning Environments: Design and Implementation',
+            'member1_paper': 'VR in Educational Contexts: A Meta-Analysis',
+            'member2_paper': 'Immersive Learning Environments: Design and Implementation',
             'presentation_video_url': 'https://www.youtube.com/watch?v=example3',
-            'literature_review': 'The literature review investigates the current state of VR technology in education, examining case studies and research findings. Results indicate significant potential for improving student engagement and knowledge retention.'
+            'tags': 'virtual reality, education, immersive learning, technology'
         }
     ]
     
