@@ -30,6 +30,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'posters'), exist_ok=True)
 os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'presentations'), exist_ok=True)
 os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'group_files'), exist_ok=True)
+os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'submissions'), exist_ok=True)
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -57,6 +58,9 @@ class ResearchProject(db.Model):
     # Combined PDF files: 2 slide decks in one PDF, 2 posters in another
     combined_slide_decks_filename = db.Column(db.String(200))  # PDF with both slide decks
     combined_posters_filename = db.Column(db.String(200))      # PDF with both posters
+    # Original submission filenames for static serving
+    submission_slide_decks_filename = db.Column(db.String(200))  # Original submission filename for slide decks
+    submission_posters_filename = db.Column(db.String(200))      # Original submission filename for posters
     # Tags for categorizing and finding similar projects
     tags = db.Column(db.String(500))  # Comma-separated tags
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -215,6 +219,12 @@ def delete_project(project_id):
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+@app.route('/submissions/<path:filename>')
+def submission_file(filename):
+    """Serve submission files statically for preview."""
+    submissions_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'submissions')
+    return send_from_directory(submissions_dir, filename)
+
 @app.route('/project/<int:project_id>')
 def view_project(project_id):
     """Public view of a specific research project"""
@@ -317,6 +327,7 @@ def init_command():
     os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'posters'), exist_ok=True)
     os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'presentations'), exist_ok=True)
     os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'group_files'), exist_ok=True)
+    os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'submissions'), exist_ok=True)
     
     # Create database tables
     db.create_all()
@@ -336,13 +347,17 @@ def init_command():
     else:
         click.echo(f"Admin user '{app.config['ADMIN_USERNAME']}' already exists.")
     
-    # Insert sample data if no projects exist
+    # Load data from CSV if no projects exist
     if ResearchProject.query.count() == 0:
-        click.echo("Inserting sample data...")
-        insert_sample_data()
-        click.echo("Sample data inserted.")
+        click.echo("Loading data from CSV...")
+        load_data_from_csv()
+        click.echo("Data loading complete.")
     else:
-        click.echo("Sample data already exists.")
+        click.echo("Projects already exist in database.")
+    
+    # Try to match submission files with projects
+    click.echo("Attempting to match submission files with projects...")
+    match_submission_files()
     
     click.echo("Database initialization complete!")
 
@@ -408,6 +423,249 @@ def upload_group_files_command(directory):
             click.echo(f"  No files uploaded for group '{group_folder}'")
     
     click.echo("Group file upload complete!")
+
+@app.cli.command("match-submissions")
+def match_submissions_command():
+    """Match submission files from uploads/submissions with existing projects."""
+    click.echo("Matching submission files with projects...")
+    match_submission_files()
+    click.echo("Submission file matching complete!")
+
+def match_submission_files():
+    """Automatically match files from uploads/submissions with projects based on group names."""
+    submissions_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'submissions')
+    
+    if not os.path.exists(submissions_dir):
+        click.echo("No submissions directory found. Skipping file matching.")
+        return
+    
+    click.echo("Matching submission files with projects...")
+    
+    # Get all submission files
+    submission_files = [f for f in os.listdir(submissions_dir) if f.endswith('.pdf')]
+    
+    if not submission_files:
+        click.echo("No PDF files found in submissions directory.")
+        return
+    
+    click.echo(f"Found {len(submission_files)} PDF files in submissions directory.")
+    
+    # Group files by potential group names
+    group_files = {}
+    
+    for filename in submission_files:
+        # Extract potential group name from filename
+        # Look for patterns like "CHCG", "Pixel Perfect", "TechTrio", etc.
+        group_name = extract_group_name_from_filename(filename)
+        
+        if group_name:
+            if group_name not in group_files:
+                group_files[group_name] = {'posters': [], 'presentations': []}
+            
+            # Determine if it's a poster or presentation
+            if is_poster_file(filename):
+                group_files[group_name]['posters'].append(filename)
+            elif is_presentation_file(filename):
+                group_files[group_name]['presentations'].append(filename)
+    
+    click.echo(f"Identified {len(group_files)} potential groups from filenames.")
+    
+    # Match with existing projects
+    matched_count = 0
+    for group_name, files in group_files.items():
+        # Find project with matching group name
+        project = ResearchProject.query.filter_by(group_name=group_name).first()
+        
+        if not project:
+            # Try fuzzy matching with member names
+            project = find_project_by_member_names(group_name, files)
+        
+        if project:
+            click.echo(f"Matched group '{group_name}' with project '{project.group_name}'")
+            
+            # Assign submission filenames for static serving
+            if files['posters']:
+                poster_file = files['posters'][0]  # Take the first poster file
+                project.submission_posters_filename = poster_file
+                click.echo(f"  Assigned poster: {poster_file}")
+            
+            if files['presentations']:
+                presentation_file = files['presentations'][0]  # Take the first presentation file
+                project.submission_slide_decks_filename = presentation_file
+                click.echo(f"  Assigned presentation: {presentation_file}")
+            
+            matched_count += 1
+        else:
+            click.echo(f"  No project found for group '{group_name}'")
+    
+    if matched_count > 0:
+        db.session.commit()
+        click.echo(f"Successfully matched {matched_count} groups with their files.")
+    else:
+        click.echo("No groups were matched with existing projects.")
+
+def extract_group_name_from_filename(filename):
+    """Extract group name from submission filename."""
+    # Remove student name prefix and file extension
+    name = filename.lower()
+    
+    # Group names from the actual data.csv
+    group_names = [
+        'all4s', 'array.sort()', 'bigbytebox', 'bit lords', 'byte bros', 'charli uiux',
+        'chcg', 'comp-etitive spirit', 'comsinteractive', 'cyber surge', 'flux', 'gophers',
+        'hci', 'hci wizards', 'humane architects', 'humantech innovators', 'inter-facing difficulty',
+        'interactive insights', 'jas bots', 'laniakea', 'metroid', 'mpj', 'no idea',
+        'ordi-naturals', 'pixel perfect', 'rejects', 'rice spiral', 'sbr monsters',
+        'skywalker', 'solana', 'sour fish', 'tag-team', 'techtrio', 'the force',
+        'the hackstreet girls', 'the it crowd', 'threesearchers', 'tri-ace', 'trio designs',
+        'usabilibees', 'wruce bayne', 'zanax'
+    ]
+    
+    # Try exact matches first
+    for group_name in group_names:
+        if group_name in name:
+            return group_name.title()
+    
+    # Try partial matches for common variations
+    partial_matches = {
+        'chcg': 'chcg',
+        'pixel perfect': 'pixel perfect',
+        'techtrio': 'techtrio',
+        'array.sort()': 'array.sort()',
+        'metroid': 'metroid',
+        'rice spiral': 'rice spiral',
+        'interactive insights': 'interactive insights',
+        'the it crowd': 'the it crowd',
+        'trio designs': 'trio designs',
+        'cyber surge': 'cyber surge',
+        'no idea': 'no idea',
+        'usabilibees': 'usabilibees',
+        'humane architects': 'humane architects',
+        'hci wizards': 'hci wizards',
+        'inter-facing difficulty': 'inter-facing difficulty',
+        'tri-ace': 'tri-ace',
+        'jasbots': 'jas bots',
+        'hackstreet girls': 'the hackstreet girls',
+        'charliuiux': 'charli uiux',
+        'comsinteractive': 'comsinteractive',
+        'skywalker': 'skywalker',
+        'mpj': 'mpj',
+        'laniakea': 'laniakea',
+        'comp-etitive spirit': 'comp-etitive spirit',
+        'all4s': 'all4s',
+        'sbr monsters': 'sbr monsters',
+        'humantech_innovators': 'humantech innovators',
+        'sour fish': 'sour fish',
+        'hci_gophers': 'gophers',
+        'solana': 'solana',
+        'byte_bros': 'byte bros',
+        'tag-team': 'tag-team',
+        'rejects': 'rejects',
+        'bit lords': 'bit lords'
+    }
+    
+    for pattern, group_name in partial_matches.items():
+        if pattern in name:
+            return group_name.title()
+    
+    # If no pattern matches, try to extract from the middle part of filename
+    # Look for text between underscores or after student name
+    parts = filename.split('_')
+    if len(parts) > 2:
+        # Look for meaningful text in the middle parts
+        for part in parts[1:-1]:  # Skip first (student name) and last (file info)
+            if len(part) > 3 and not part.isdigit():
+                return part.title()
+    
+    return None
+
+def is_poster_file(filename):
+    """Determine if a file is a poster based on filename."""
+    name = filename.lower()
+    poster_keywords = ['poster', 'posters']
+    return any(keyword in name for keyword in poster_keywords)
+
+def is_presentation_file(filename):
+    """Determine if a file is a presentation based on filename."""
+    name = filename.lower()
+    presentation_keywords = ['presentation', 'presentations', 'slides', 'slide', 'lit']
+    return any(keyword in name for keyword in presentation_keywords)
+
+def find_project_by_member_names(group_name, files):
+    """Try to find a project by matching member names from filenames."""
+    # Extract student names from filenames
+    student_names = set()
+    for filename in files['posters'] + files['presentations']:
+        # Extract first name from filename (before first underscore)
+        first_part = filename.split('_')[0]
+        if first_part:
+            student_names.add(first_part.lower())
+    
+    # Look for projects where member names match
+    for project in ResearchProject.query.all():
+        member1_lower = project.member1_name.lower()
+        member2_lower = project.member2_name.lower()
+        
+        # Check if any student name from files matches project members
+        for student_name in student_names:
+            if (student_name in member1_lower or member1_lower in student_name or
+                student_name in member2_lower or member2_lower in student_name):
+                return project
+    
+    return None
+
+def load_data_from_csv():
+    """Load research projects from data.csv file."""
+    csv_path = 'data.csv'
+    
+    if not os.path.exists(csv_path):
+        click.echo(f"Data file '{csv_path}' not found. Using sample data instead.")
+        insert_sample_data()
+        return
+    
+    try:
+        # Read the CSV file
+        df = pd.read_csv(csv_path)
+        click.echo(f"Loaded {len(df)} student records from {csv_path}")
+        
+        # Group students by A1 Group
+        groups = df.groupby('A1 Group')
+        click.echo(f"Found {len(groups)} research groups")
+        
+        for group_name, group_data in groups:
+            students = group_data.to_dict('records')
+            
+            if len(students) < 2:
+                click.echo(f"Warning: Group '{group_name}' has only {len(students)} student(s). Skipping.")
+                continue
+            
+            # Take first two students as primary members
+            student1 = students[0]
+            student2 = students[1]
+            
+            # Create project
+            project = ResearchProject(
+                group_name=group_name,
+                member1_name=f"{student1['First name']} {student1['Last name']}",
+                member2_name=f"{student2['First name']} {student2['Last name']}",
+                paper1_title=student1['Paper'] if student1['Paper'] != 'Paper Title' else f"{group_name} Research Paper 1",
+                paper2_title=student2['Paper'] if student2['Paper'] != 'Paper Title' else f"{group_name} Research Paper 2",
+                member1_paper=student1['Paper'] if student1['Paper'] != 'Paper Title' else f"{group_name} Research Paper 1",
+                member2_paper=student2['Paper'] if student2['Paper'] != 'Paper Title' else f"{group_name} Research Paper 2",
+                presentation_video_url=student1.get('Presentation URL', '') or student2.get('Presentation URL', ''),
+                tags=student1.get('Tags', '') or student2.get('Tags', '')
+            )
+            
+            db.session.add(project)
+            click.echo(f"Added project: {group_name} ({project.member1_name}, {project.member2_name})")
+        
+        db.session.commit()
+        click.echo(f"Successfully loaded {len(groups)} research projects from CSV")
+        
+    except Exception as e:
+        click.echo(f"Error loading data from CSV: {e}")
+        click.echo("Falling back to sample data...")
+        insert_sample_data()
 
 def insert_sample_data():
     """Insert sample research projects."""

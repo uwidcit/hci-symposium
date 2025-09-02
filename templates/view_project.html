@@ -24,12 +24,34 @@
                     </ol>
                 </nav>
                 
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 fw-bold mb-0">
+                                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h1 class="h3 fw-bold mb-3">
                             <i class="fas fa-users me-2 text-primary"></i>
                             {{ project.group_name }}
-                        </h1>
+                    </h1>
+                        
+                        <!-- Student and Paper Information -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-user-graduate text-primary me-2"></i>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">{{ project.member1_name }}</h6>
+                                        <small class="text-muted">{{ project.member1_paper }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-user-graduate text-primary me-2"></i>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">{{ project.member2_name }}</h6>
+                                        <small class="text-muted">{{ project.member2_paper }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="d-flex gap-2">
@@ -50,46 +72,10 @@
 
 <!-- Project Content -->
 <section class="py-5">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <!-- Main Content -->
-            <div class="col-lg-8">
-                <!-- Research Team & Papers -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-users me-2"></i>
-                            Research Team & Papers
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <!-- Student 1 -->
-                            <div class="col-md-6 mb-4">
-                                <div class="text-center p-4 border rounded">
-                                    <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
-                                    <h5 class="mb-2">{{ project.member1_name }}</h5>
-                                    <div class="paper-assignment">
-                                        <h6 class="text-muted mb-2">Research Paper:</h6>
-                                        <p class="fw-bold text-primary">{{ project.member1_paper }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Student 2 -->
-                            <div class="col-md-6 mb-4">
-                                <div class="text-center p-4 border rounded">
-                                    <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
-                                    <h5 class="mb-2">{{ project.member2_name }}</h5>
-                                    <div class="paper-assignment">
-                                        <h6 class="text-muted mb-2">Research Paper:</h6>
-                                        <p class="fw-bold text-primary">{{ project.member2_paper }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        <!-- Left Column: Project Information (1/4) -->
+            <div class="col-lg-3">
 
                 <!-- Research Resources -->
                 <div class="card mb-4">
@@ -100,102 +86,83 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <!-- Button 1: Preview Slide Decks -->
-                            <div class="col-md-4 mb-3">
-                                <div class="text-center">
-                                    {% if project.combined_slide_decks_filename %}
-                                    <button class="btn btn-warning btn-lg w-100" type="button" 
-                                            data-bs-toggle="collapse" data-bs-target="#slideDecksPreview" 
-                                            aria-expanded="false" aria-controls="slideDecksPreview">
-                                        <i class="fas fa-eye me-2"></i>
-                                        Preview Slide Decks
-                                    </button>
-                                    <small class="text-muted d-block mt-2">Both students' presentations</small>
-                                    {% else %}
-                                    <button class="btn btn-outline-secondary btn-lg w-100" disabled>
-                                        <i class="fas fa-eye me-2"></i>
-                                        Preview Slide Decks
-                                    </button>
-                                    <small class="text-muted d-block mt-2">Not available</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <!-- Button 2: Preview Posters -->
-                            <div class="col-md-4 mb-3">
-                                <div class="text-center">
-                                    {% if project.combined_posters_filename %}
-                                    <button class="btn btn-success btn-lg w-100" type="button" 
-                                            data-bs-toggle="collapse" data-bs-target="#postersPreview" 
-                                            aria-expanded="false" aria-controls="postersPreview">
-                                        <i class="fas fa-eye me-2"></i>
-                                        Preview Posters
-                                    </button>
-                                    <small class="text-muted d-block mt-2">Both students' posters</small>
-                                    {% else %}
-                                    <button class="btn btn-outline-secondary btn-lg w-100" disabled>
-                                        <i class="fas fa-eye me-2"></i>
-                                        Preview Posters
-                                    </button>
-                                    <small class="text-muted d-block mt-2">Not available</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <!-- Button 3: View Video Presentation -->
-                            <div class="col-md-4 mb-3">
-                                <div class="text-center">
-                                    {% if project.presentation_video_url %}
-                                    <a href="{{ project.presentation_video_url }}" 
-                                       class="btn btn-info btn-lg w-100" target="_blank">
-                                        <i class="fas fa-play me-2"></i>
-                                        View Video Presentation
-                                    </a>
-                                    <small class="text-muted d-block mt-2">Watch presentation video</small>
-                                    {% else %}
-                                    <button class="btn btn-outline-secondary btn-lg w-100" disabled>
-                                        <i class="fas fa-play me-2"></i>
-                                        View Video Presentation
-                                    </button>
-                                    <small class="text-muted d-block mt-2">Not available</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Button 1: Preview Slide Decks -->
+                         <div class="mb-3">
+                            {% if project.submission_slide_decks_filename %}
+                            <button class="btn btn-warning w-100" type="button" 
+                                    onclick="showPreview('slideDecks')">
+                                <i class="fas fa-eye me-2"></i>
+                                Preview Slide Decks
+                            </button>
+                            <small class="text-muted d-block mt-1">Both students' presentations</small>
+                            {% else %}
+                            <button class="btn btn-outline-secondary w-100" disabled>
+                                     <i class="fas fa-eye me-2"></i>
+                                Preview Slide Decks
+                            </button>
+                            <small class="text-muted d-block mt-1">Not available</small>
+                            {% endif %}
+                         </div>
+
+                        <!-- Button 2: Preview Posters -->
+                         <div class="mb-3">
+                            {% if project.submission_posters_filename %}
+                            <button class="btn btn-success w-100" type="button" 
+                                    onclick="showPreview('posters')">
+                                <i class="fas fa-eye me-2"></i>
+                                Preview Posters
+                            </button>
+                            <small class="text-muted d-block mt-1">Both students' posters</small>
+                            {% else %}
+                            <button class="btn btn-outline-secondary w-100" disabled>
+                                     <i class="fas fa-eye me-2"></i>
+                                Preview Posters
+                            </button>
+                            <small class="text-muted d-block mt-1">Not available</small>
+                            {% endif %}
+                         </div>
+
+                        <!-- Button 3: View Video Presentation -->
+                        <div class="mb-3">
+                         {% if project.presentation_video_url %}
+                             <a href="{{ project.presentation_video_url }}" 
+                                class="btn btn-info w-100" target="_blank">
+                                 <i class="fas fa-play me-2"></i>
+                                View Video Presentation
+                            </a>
+                            <small class="text-muted d-block mt-1">Watch presentation video</small>
+                            {% else %}
+                            <button class="btn btn-outline-secondary w-100" disabled>
+                                <i class="fas fa-play me-2"></i>
+                                View Video Presentation
+                            </button>
+                            <small class="text-muted d-block mt-1">Not available</small>
+                            {% endif %}
+                         </div>
                         
-                        <!-- Download Links (if files are available) -->
-                        {% if project.combined_slide_decks_filename or project.combined_posters_filename %}
-                        <div class="mt-4 pt-3 border-top">
-                            <h6 class="text-muted mb-3 text-center">Download Resources</h6>
-                            <div class="row">
-                                {% if project.combined_slide_decks_filename %}
-                                <div class="col-md-6 mb-2">
-                                    <a href="{{ url_for('uploaded_file', filename='presentations/' + project.combined_slide_decks_filename) }}" 
-                                       class="btn btn-outline-warning w-100" target="_blank" download>
-                                        <i class="fas fa-download me-2"></i>
-                                        Download Slide Decks
-                                    </a>
-                                </div>
-                                {% endif %}
-                                {% if project.combined_posters_filename %}
-                                <div class="col-md-6 mb-2">
-                                    <a href="{{ url_for('uploaded_file', filename='posters/' + project.combined_posters_filename) }}" 
-                                       class="btn btn-outline-success w-100" target="_blank" download>
-                                        <i class="fas fa-download me-2"></i>
-                                        Download Posters
-                                    </a>
-                                </div>
-                                {% endif %}
-                            </div>
+                        <!-- Download Links -->
+                        {% if project.submission_slide_decks_filename or project.submission_posters_filename %}
+                        <div class="mt-3 pt-3 border-top">
+                            <h6 class="text-muted mb-2">Download Resources</h6>
+                            {% if project.submission_slide_decks_filename %}
+                            <a href="{{ url_for('submission_file', filename=project.submission_slide_decks_filename) }}" 
+                               class="btn btn-outline-warning btn-sm w-100 mb-2" target="_blank" download>
+                                <i class="fas fa-download me-2"></i>
+                                Download Slide Decks
+                            </a>
+                            {% endif %}
+                            {% if project.submission_posters_filename %}
+                            <a href="{{ url_for('submission_file', filename=project.submission_posters_filename) }}" 
+                               class="btn btn-outline-success btn-sm w-100" target="_blank" download>
+                                <i class="fas fa-download me-2"></i>
+                                Download Posters
+                            </a>
+                         {% endif %}
                         </div>
                         {% endif %}
                     </div>
                 </div>
-            </div>
 
-            <!-- Sidebar -->
-            <div class="col-lg-4">
                 <!-- Project Tags -->
                 {% if project.tags %}
                 <div class="card mb-4">
@@ -206,10 +173,10 @@
                         </h6>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="d-flex flex-wrap gap-1">
                             {% for tag in project.tags.split(',') %}
                                 {% if tag.strip() %}
-                                <span class="badge bg-primary">{{ tag.strip() }}</span>
+                                <span class="badge bg-primary small">{{ tag.strip() }}</span>
                                 {% endif %}
                             {% endfor %}
                         </div>
@@ -228,20 +195,11 @@
                     </div>
                     <div class="card-body">
                         {% for similar_project in similar_projects %}
-                        <div class="mb-3">
+                        <div class="mb-2">
                             <a href="{{ url_for('view_project', project_id=similar_project.id) }}" 
                                class="text-decoration-none">
-                                <h6 class="mb-1 text-primary">{{ similar_project.group_name }}</h6>
-                                <p class="mb-1 text-muted small">{{ similar_project.paper1_title[:40] }}{% if similar_project.paper1_title|length > 40 %}...{% endif %}</p>
-                                {% if similar_project.tags %}
-                                <div class="d-flex flex-wrap gap-1">
-                                    {% for tag in similar_project.tags.split(',')[:2] %}
-                                        {% if tag.strip() %}
-                                        <span class="badge bg-light text-dark small">{{ tag.strip() }}</span>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
+                                <h6 class="mb-1 text-primary small">{{ similar_project.group_name }}</h6>
+                                <p class="mb-1 text-muted" style="font-size: 0.75rem;">{{ similar_project.paper1_title[:30] }}{% if similar_project.paper1_title|length > 30 %}...{% endif %}</p>
                             </a>
                         </div>
                         {% if not loop.last %}<hr class="my-2">{% endif %}
@@ -249,66 +207,68 @@
                     </div>
                 </div>
                 {% endif %}
+            </div>
 
-
+            <!-- Right Column: Document Preview (3/4) -->
+            <div class="col-lg-9">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-pdf me-2"></i>
+                            <span id="previewTitle">Select a document to preview</span>
+                        </h5>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="hidePreview()" style="display: none;" id="closePreview">
+                            <i class="fas fa-times me-1"></i>
+                            Close
+                        </button>
+                    </div>
+                    <div class="card-body p-0 position-relative" style="height: 600px;">
+                        <!-- Default state -->
+                        <div id="defaultPreview" class="d-flex align-items-center justify-content-center position-absolute w-100 h-100" style="top: 0; left: 0;">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-file-pdf fa-4x mb-3"></i>
+                                <h5>Document Preview</h5>
+                                <p>Click on "Preview Slide Decks" or "Preview Posters" to view documents here.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Slide Decks Preview -->
+                        {% if project.submission_slide_decks_filename %}
+                        <div id="slideDecksPreview" class="preview-container position-absolute w-100 h-100" style="display: none; top: 0; left: 0;">
+                            <iframe 
+                                src="{{ url_for('submission_file', filename=project.submission_slide_decks_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
+                                width="100%" 
+                                height="100%" 
+                                frameborder="0"
+                                style="border: none;">
+                                <p>Your browser does not support PDF preview. 
+                                <a href="{{ url_for('submission_file', filename=project.submission_slide_decks_filename) }}" target="_blank">Click here to view the PDF</a></p>
+                            </iframe>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Posters Preview -->
+                        {% if project.submission_posters_filename %}
+                        <div id="postersPreview" class="preview-container position-absolute w-100 h-100" style="display: none; top: 0; left: 0;">
+                            <iframe 
+                                src="{{ url_for('submission_file', filename=project.submission_posters_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
+                                width="100%" 
+                                height="100%" 
+                                frameborder="0"
+                                style="border: none;">
+                                <p>Your browser does not support PDF preview. 
+                                <a href="{{ url_for('submission_file', filename=project.submission_posters_filename) }}" target="_blank">Click here to view the PDF</a></p>
+                            </iframe>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Slide Decks Preview Modal -->
-{% if project.combined_slide_decks_filename %}
-<div class="collapse mb-4" id="slideDecksPreview">
-    <div class="card">
-        <div class="card-header bg-warning text-white">
-            <h6 class="mb-0">
-                <i class="fas fa-file-pdf me-2"></i>
-                Combined Slide Decks Preview
-            </h6>
-        </div>
-        <div class="card-body p-0">
-            <div class="pdf-preview-container" style="height: 600px;">
-                <iframe 
-                    src="{{ url_for('uploaded_file', filename='presentations/' + project.combined_slide_decks_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
-                    width="100%" 
-                    height="100%" 
-                    frameborder="0"
-                    style="border: none;">
-                    <p>Your browser does not support PDF preview. 
-                    <a href="{{ url_for('uploaded_file', filename='presentations/' + project.combined_slide_decks_filename) }}" target="_blank">Click here to view the PDF</a></p>
-                </iframe>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
 
-<!-- Posters Preview Modal -->
-{% if project.combined_posters_filename %}
-<div class="collapse mb-4" id="postersPreview">
-    <div class="card">
-        <div class="card-header bg-success text-white">
-            <h6 class="mb-0">
-                <i class="fas fa-file-pdf me-2"></i>
-                Combined Posters Preview
-            </h6>
-        </div>
-        <div class="card-body p-0">
-            <div class="pdf-preview-container" style="height: 600px;">
-                <iframe 
-                    src="{{ url_for('uploaded_file', filename='posters/' + project.combined_posters_filename) }}#toolbar=1&navpanes=1&scrollbar=1" 
-                    width="100%" 
-                    height="100%" 
-                    frameborder="0"
-                    style="border: none;">
-                    <p>Your browser does not support PDF preview. 
-                    <a href="{{ url_for('uploaded_file', filename='posters/' + project.combined_posters_filename) }}" target="_blank">Click here to view the PDF</a></p>
-                </iframe>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
 
 <!-- Related Projects Section -->
 <section class="py-5 bg-white">
@@ -329,37 +289,71 @@
                 View All Research Projects
             </a>
         </div>
-    </div>
-</section>
-
-<script>
-// Handle toggle button text changes for preview buttons
-document.addEventListener('DOMContentLoaded', function() {
-    // Slide decks preview toggle
-    const slideDecksToggle = document.querySelector('[data-bs-target="#slideDecksPreview"]');
-    if (slideDecksToggle) {
-        slideDecksToggle.addEventListener('click', function() {
-            const button = this;
-            if (button.textContent.includes('Preview')) {
-                button.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide Slide Decks';
-            } else {
-                button.innerHTML = '<i class="fas fa-eye me-2"></i>Preview Slide Decks';
-            }
-        });
+             </div>
+     </section>
+     
+           <script>
+// Preview functionality for the new layout
+function showPreview(type) {
+    // Hide all preview containers
+    const containers = document.querySelectorAll('.preview-container');
+    containers.forEach(container => {
+        container.style.display = 'none';
+    });
+    
+    // Hide default preview
+    const defaultPreview = document.getElementById('defaultPreview');
+    if (defaultPreview) {
+        defaultPreview.style.display = 'none';
     }
     
-    // Posters preview toggle
-    const postersToggle = document.querySelector('[data-bs-target="#postersPreview"]');
-    if (postersToggle) {
-        postersToggle.addEventListener('click', function() {
-            const button = this;
-            if (button.textContent.includes('Preview')) {
-                button.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide Posters';
-            } else {
-                button.innerHTML = '<i class="fas fa-eye me-2"></i>Preview Posters';
-            }
-        });
+    // Show close button
+    const closeBtn = document.getElementById('closePreview');
+    if (closeBtn) {
+        closeBtn.style.display = 'block';
     }
-});
-</script>
-{% endblock %}
+    
+    // Show the selected preview
+    const previewContainer = document.getElementById(type + 'Preview');
+    if (previewContainer) {
+        previewContainer.style.display = 'block';
+        
+        // Update title
+        const title = document.getElementById('previewTitle');
+        if (title) {
+            if (type === 'slideDecks') {
+                title.textContent = 'Slide Decks Preview';
+            } else if (type === 'posters') {
+                title.textContent = 'Posters Preview';
+            }
+        }
+    }
+}
+
+function hidePreview() {
+    // Hide all preview containers
+    const containers = document.querySelectorAll('.preview-container');
+    containers.forEach(container => {
+        container.style.display = 'none';
+    });
+    
+    // Show default preview
+    const defaultPreview = document.getElementById('defaultPreview');
+    if (defaultPreview) {
+        defaultPreview.style.display = 'flex';
+    }
+    
+    // Hide close button
+    const closeBtn = document.getElementById('closePreview');
+    if (closeBtn) {
+        closeBtn.style.display = 'none';
+    }
+    
+    // Reset title
+    const title = document.getElementById('previewTitle');
+    if (title) {
+        title.textContent = 'Select a document to preview';
+    }
+}
+      </script>
+     {% endblock %}
