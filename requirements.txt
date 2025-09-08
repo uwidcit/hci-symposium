@@ -7,3 +7,4 @@ pandas==2.1.1
 python-dotenv==1.0.0
 Werkzeug==2.3.7
 click==8.1.7
+gunicorn==21.2.0
