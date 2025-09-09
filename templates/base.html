@@ -19,16 +19,142 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--light-bg);
             color: var(--dark-text);
+            overflow-x: hidden;
+        }
+        
+        /* Prevent horizontal overflow */
+        * {
+            box-sizing: border-box;
+        }
+        
+        .container, .container-fluid {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* Ensure all elements respect viewport width */
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        
+        .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, 
+        .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+        .col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6,
+        .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+        .col-md, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
+        .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12,
+        .col-lg, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6,
+        .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12,
+        .col-xl, .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6,
+        .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
         }
         
         .navbar {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow-x: hidden;
+        }
+        
+        .navbar .container {
+            overflow-x: hidden;
         }
         
         .navbar-brand {
             font-weight: bold;
             font-size: 1.5rem;
+        }
+        
+        /* Mobile responsive navbar brand */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 200px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 0.95rem;
+                max-width: 150px;
+            }
+        }
+        
+        @media (max-width: 450px) {
+            .navbar-brand {
+                font-size: 0.85rem;
+                max-width: 120px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .navbar-brand {
+                font-size: 0.75rem;
+                max-width: 100px;
+            }
+        }
+        
+        @media (max-width: 350px) {
+            .navbar-brand {
+                font-size: 0.7rem;
+                max-width: 80px;
+            }
+        }
+        
+        /* Specific fix for 412px width screens */
+        @media (max-width: 412px) {
+            .navbar-brand {
+                font-size: 0.8rem;
+                max-width: 110px;
+            }
+            
+            .navbar-toggler {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.8rem !important;
+                line-height: 1.1 !important;
+            }
+            
+            .hero-section .lead {
+                font-size: 0.9rem !important;
+            }
+            
+            .btn-lg {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            /* Fix button groups and flex containers */
+            .d-flex {
+                flex-wrap: wrap !important;
+            }
+            
+            .btn-group {
+                flex-wrap: wrap;
+            }
+            
+            .gap-2 > * {
+                margin: 0.25rem !important;
+            }
+            
+            .gap-3 > * {
+                margin: 0.25rem !important;
+            }
+            
+            /* Ensure text doesn't overflow */
+            .card-title, .card-text, h1, h2, h3, h4, h5, h6 {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+            }
         }
         
         .hero-section {
@@ -139,6 +265,67 @@
         @media (max-width: 576px) {
             .pdf-preview-container {
                 height: 300px !important;
+            }
+        }
+        
+        /* Responsive hero section */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem !important;
+            }
+            .hero-section .lead {
+                font-size: 1.1rem !important;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-section h1 {
+                font-size: 2rem !important;
+                line-height: 1.2 !important;
+            }
+            .hero-section .lead {
+                font-size: 1rem !important;
+            }
+            .hero-section {
+                padding: 2rem 0 !important;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .hero-section h1 {
+                font-size: 1.75rem !important;
+                line-height: 1.1 !important;
+            }
+            .hero-section .lead {
+                font-size: 0.95rem !important;
+            }
+        }
+        
+        /* Responsive page headers */
+        @media (max-width: 768px) {
+            .display-5 {
+                font-size: 2rem !important;
+            }
+            .display-4 {
+                font-size: 2.5rem !important;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .display-5 {
+                font-size: 1.75rem !important;
+            }
+            .display-4 {
+                font-size: 2rem !important;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .display-5 {
+                font-size: 1.5rem !important;
+            }
+            .display-4 {
+                font-size: 1.75rem !important;
             }
         }
     </style>
