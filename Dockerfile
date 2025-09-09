@@ -1,5 +1,5 @@
-# Use Python 3.11 slim image for smaller size
-FROM python:3.11-slim
+# Use Python 3.10.5 slim image for compatibility
+FROM python:3.10.5-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -27,6 +27,7 @@ COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir numpy==1.23.5 \
     && pip install --no-cache-dir psycopg2-binary==2.9.7 \
     && pip install --no-cache-dir SQLAlchemy==1.4.53 \
     && pip install --no-cache-dir -r requirements.txt
