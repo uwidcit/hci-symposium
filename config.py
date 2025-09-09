@@ -4,7 +4,7 @@ from datetime import timedelta
 class Config:
     """Base configuration class"""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here-change-in-production'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///symposium.db'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URL') or os.environ.get('DATABASE_URL') or 'sqlite:///symposium.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # File upload settings

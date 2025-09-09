@@ -18,6 +18,7 @@ RUN apt-get update \
         libc6-dev \
         libffi-dev \
         libssl-dev \
+        libpq-dev \
         curl \
         && rm -rf /var/lib/apt/lists/*
 
@@ -26,6 +27,8 @@ COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir psycopg2-binary==2.9.7 \
+    && pip install --no-cache-dir SQLAlchemy==1.4.53 \
     && pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
@@ -50,4 +53,4 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:5000/ || exit 1
 
 # Initialize database and start with Gunicorn
-CMD ["sh", "-c", "python -c 'from app import init_db; init_db()' && gunicorn --config gunicorn.conf.py app:app"]
+CMD ["sh", "-c", "gunicorn --config gunicorn.conf.py app:app"]
